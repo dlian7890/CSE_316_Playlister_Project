@@ -1,11 +1,8 @@
-import React from 'react'
+import React from 'react';
+import './AppBar.css';
 
 const AppBar = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default AppBar
+export default AppBar;
