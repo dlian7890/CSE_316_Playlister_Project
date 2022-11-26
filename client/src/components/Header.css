@@ -1,3 +1,7 @@
 .logo-image {
   width: 150px;
 }
+
+.header.hidden {
+  display: none;
+}

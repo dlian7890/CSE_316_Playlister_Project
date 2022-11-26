@@ -7,9 +7,10 @@ import {
   Menu,
   MenuItem,
   Toolbar,
+  Typography,
 } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
-import LogoImage from '../assets/Logo.png';
+import LogoImage from '../assets/Logo-Blue.png';
 import './Header.css';
 
 const Header = () => {
@@ -77,13 +78,15 @@ const Header = () => {
   );
 
   let menu = loggedOutMenu;
+  let className = true ? 'header hidden' : 'header';
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box className={className} sx={{ flexGrow: 1 }}>
       <AppBar position='static'>
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
-            <img class='logo-image' src={LogoImage} />
+            {/* <img class='logo-image' src={LogoImage} /> */}
+            <Typography variant='h4'>Playlister</Typography>
           </Box>
           <IconButton onClick={handleProfileMenuOpen}>
             <AccountCircle />
