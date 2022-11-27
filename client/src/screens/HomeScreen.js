@@ -1,11 +1,15 @@
-import React from 'react'
+import React from 'react';
+import { Box } from '@mui/material';
+import ToolBar from '../components/ToolBar';
 
 const HomeScreen = () => {
   return (
-    <div>
-      
-    </div>
-  )
-}
+    <>
+      <Box sx={{ bgcolor: '#f6f6f6' }}>
+        <ToolBar />
+      </Box>
+    </>
+  );
+};
 
-export default HomeScreen
+export default HomeScreen;

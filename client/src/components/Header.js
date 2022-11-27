@@ -10,7 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
-import LogoImage from '../assets/Logo-Blue.png';
 import './Header.css';
 
 const Header = () => {
