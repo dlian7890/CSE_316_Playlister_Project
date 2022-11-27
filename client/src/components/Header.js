@@ -1,4 +1,5 @@
 import { React, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
   AppBar,
@@ -15,6 +16,7 @@ import './Header.css';
 const Header = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+  const navigate = useNavigate();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -22,6 +24,16 @@ const Header = () => {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogin = () => {
+    handleMenuClose();
+    navigate('/login');
+  };
+
+  const handleRegister = () => {
+    handleMenuClose();
+    navigate('/register');
   };
 
   const handleLogout = () => {
@@ -48,12 +60,8 @@ const Header = () => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
-        <Link to='/login/'>Login</Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to='/register/'>Create New Account</Link>
-      </MenuItem>
+      <MenuItem onClick={handleLogin}>Login</MenuItem>
+      <MenuItem onClick={handleRegister}>Create New Account</MenuItem>
     </Menu>
   );
 

@@ -25,28 +25,30 @@ const ToolBar = () => {
     handleSortMenuClose();
   };
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <IconButton>
-        <Home />
-      </IconButton>
-      <IconButton>
-        <Group />
-      </IconButton>
-      <IconButton sx={{ mr: 2 }}>
-        <Person />
-      </IconButton>
-      <Box sx={{ width: '400px', bgcolor: '#ffffff' }}>
-        <TextField
-          fullWidth
-          id='outlined-basic'
-          label='Search'
-          variant='outlined'
-        />
-      </Box>
-      <Box sx={{ flexGrow: 1 }}></Box>
-      <IconButton onClick={handleSortMenuOpen}>
-        <Sort />
-      </IconButton>
+    <Box sx={{ flexGrow: 1, mb: 2 }}>
+      <Toolbar>
+        <IconButton>
+          <Home />
+        </IconButton>
+        <IconButton>
+          <Group />
+        </IconButton>
+        <IconButton sx={{ mr: 2 }}>
+          <Person />
+        </IconButton>
+        <Box sx={{ width: '400px', bgcolor: '#ffffff' }}>
+          <TextField
+            fullWidth
+            id='outlined-basic'
+            label='Search'
+            variant='outlined'
+          />
+        </Box>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <IconButton onClick={handleSortMenuOpen}>
+          <Sort />
+        </IconButton>
+      </Toolbar>
       <Menu
         anchorEl={anchorEl}
         anchorOrigin={{
