@@ -1,8 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import './SplashScreen.css';
 
 const SplashScreen = () => {
+  const navigate = useNavigate();
+  const handleRegister = () => {
+    navigate('/register');
+  };
+  const handleLogin = () => {
+    navigate('/login');
+  };
+  const handleGuest = () => {
+    navigate('/home');
+  };
+
   return (
     <Box
       className='splash-screen'
@@ -39,13 +51,13 @@ const SplashScreen = () => {
           width: '50vw',
         }}
       >
-        <Button variant='contained' size='large'>
+        <Button variant='contained' size='large' onClick={handleRegister}>
           Create Account
         </Button>
-        <Button variant='contained' size='large'>
+        <Button variant='contained' size='large' onClick={handleLogin}>
           Login
         </Button>
-        <Button variant='contained' size='large'>
+        <Button variant='contained' size='large' onClick={handleGuest}>
           Continue as Guest
         </Button>
       </Box>

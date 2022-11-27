@@ -50,10 +50,10 @@ const Header = () => {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>
-        {/* <Link to='/login/'>Login</Link> */}
+        <Link to='/login/'>Login</Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        {/* <Link to='/register/'>Create New Account</Link> */}
+        <Link to='/register/'>Create New Account</Link>
       </MenuItem>
     </Menu>
   );
@@ -78,7 +78,7 @@ const Header = () => {
   );
 
   let menu = loggedOutMenu;
-  let className = true ? 'header hidden' : 'header';
+  let className = false ? 'header hidden' : 'header';
 
   return (
     <Box className={className} sx={{ flexGrow: 1 }}>
