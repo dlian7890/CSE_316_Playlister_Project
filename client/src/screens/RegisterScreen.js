@@ -1,4 +1,5 @@
-import React from 'react';
+import { React, useContext } from 'react';
+import AuthContext from '../auth';
 import {
   Avatar,
   Box,
@@ -10,17 +11,20 @@ import {
   Typography,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+
 const RegisterScreen = () => {
+  const { auth } = useContext(AuthContext);
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    // auth.registerUser(
-    //   formData.get('firstName'),
-    //   formData.get('lastName'),
-    //   formData.get('email'),
-    //   formData.get('password'),
-    //   formData.get('passwordVerify')
-    // );
+    auth.registerUser(
+      formData.get('firstName'),
+      formData.get('lastName'),
+      formData.get('username'),
+      formData.get('email'),
+      formData.get('password'),
+      formData.get('passwordVerify')
+    );
     // auth.loginUser(formData.get('email'), formData.get('password'));
   };
 
@@ -57,6 +61,15 @@ const RegisterScreen = () => {
                 id='lastName'
                 label='Last Name'
                 name='lastName'
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                id='username'
+                label='Username'
+                name='username'
               />
             </Grid>
             <Grid item xs={12}>

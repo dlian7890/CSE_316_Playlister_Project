@@ -1,4 +1,5 @@
-import React from 'react';
+import { React, useContext } from 'react';
+import AuthContext from '../auth';
 import {
   Avatar,
   Box,
@@ -12,10 +13,12 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const LoginScreen = () => {
+  const { auth } = useContext(AuthContext);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    // auth.loginUser(formData.get('email'), formData.get('password'));
+    auth.loginUser(formData.get('email'), formData.get('password'));
   };
 
   return (

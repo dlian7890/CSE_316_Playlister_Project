@@ -2,7 +2,7 @@ const auth = require('../auth');
 const User = require('../models/user-model');
 const bcrypt = require('bcryptjs');
 
-getLoggedIn = async (req, res) => {
+const getLoggedIn = async (req, res) => {
   try {
     let userId = auth.verifyUser(req);
     if (!userId) {
@@ -30,7 +30,7 @@ getLoggedIn = async (req, res) => {
   }
 };
 
-loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
   console.log('loginUser');
   try {
     const { email, password } = req.body;
@@ -86,7 +86,7 @@ loginUser = async (req, res) => {
   }
 };
 
-logoutUser = async (req, res) => {
+const logoutUser = async (req, res) => {
   res
     .cookie('token', '', {
       httpOnly: true,
@@ -97,14 +97,17 @@ logoutUser = async (req, res) => {
     .send();
 };
 
-registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, passwordVerify } = req.body;
+    const { firstName, lastName, username, email, password, passwordVerify } =
+      req.body;
     console.log(
       'create user: ' +
         firstName +
         ' ' +
         lastName +
+        ' ' +
+        username +
         ' ' +
         email +
         ' ' +
@@ -112,7 +115,14 @@ registerUser = async (req, res) => {
         ' ' +
         passwordVerify
     );
-    if (!firstName || !lastName || !email || !password || !passwordVerify) {
+    if (
+      !firstName ||
+      !lastName ||
+      !username ||
+      !email ||
+      !password ||
+      !passwordVerify
+    ) {
       return res
         .status(400)
         .json({ errorMessage: 'Please enter all required fields.' });
@@ -130,6 +140,13 @@ registerUser = async (req, res) => {
       });
     }
     console.log('password and password verify match');
+    const existingUserName = await User.findOne({ username: username });
+    if (existingUserName) {
+      return res.status(400).json({
+        success: false,
+        errorMessage: 'An account with this Username already exists.',
+      });
+    }
     const existingUser = await User.findOne({ email: email });
     console.log('existingUser: ' + existingUser);
     if (existingUser) {
@@ -147,6 +164,7 @@ registerUser = async (req, res) => {
     const newUser = new User({
       firstName,
       lastName,
+      username,
       email,
       passwordHash,
     });
