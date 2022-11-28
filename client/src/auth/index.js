@@ -14,7 +14,7 @@ export const AuthActionType = {
   AUTH_ERROR: 'AUTH_ERROR',
 };
 
-function AuthContextProvider(props) {
+const AuthContextProvider = (props) => {
   const [auth, setAuth] = useState({
     user: null,
     loggedIn: false,
@@ -167,7 +167,7 @@ function AuthContextProvider(props) {
       {props.children}
     </AuthContext.Provider>
   );
-}
+};
 
 export default AuthContext;
 export { AuthContextProvider };

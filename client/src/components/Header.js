@@ -1,4 +1,5 @@
-import { React, useState } from 'react';
+import { React, useState, useContext } from 'react';
+import AuthContext from '../auth';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {
@@ -14,6 +15,7 @@ import { AccountCircle } from '@mui/icons-material';
 import './Header.css';
 
 const Header = () => {
+  const { auth } = useContext(AuthContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -38,7 +40,7 @@ const Header = () => {
 
   const handleLogout = () => {
     handleMenuClose();
-    // auth.logoutUser();
+    auth.logoutUser();
   };
 
   const handleGoToHome = () => {
@@ -84,7 +86,7 @@ const Header = () => {
     </Menu>
   );
 
-  let menu = loggedOutMenu;
+  let menu = auth.loggedIn ? loggedInMenu : loggedOutMenu;
   let className = false ? 'header hidden' : 'header';
 
   return (
