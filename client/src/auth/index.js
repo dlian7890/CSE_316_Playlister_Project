@@ -123,7 +123,7 @@ const AuthContextProvider = (props) => {
             user: response.data.user,
           },
         });
-        navigate('/');
+        navigate('/home');
       }
     } catch (err) {
       auth.setErrorMessage(err.response.data.errorMessage);
@@ -137,7 +137,7 @@ const AuthContextProvider = (props) => {
         type: AuthActionType.LOGOUT_USER,
         payload: null,
       });
-      navigate('/');
+      navigate('/home');
     }
   };
 

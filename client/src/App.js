@@ -1,5 +1,6 @@
 import React from 'react';
 import { AuthContextProvider } from './auth';
+import { GlobalStoreContextProvider } from './store';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import AllListsScreen from './screens/AllListsScreen';
@@ -13,15 +14,17 @@ const App = () => {
   return (
     <Router>
       <AuthContextProvider>
-        <Header />
-        <Routes>
-          <Route path='/' element={<SplashScreen />} />
-          <Route path='/login' element={<LoginScreen />} />
-          <Route path='/register' element={<RegisterScreen />} />
-          <Route path='/home' element={<HomeScreen />} />
-          <Route path='/all-lists' element={<AllListsScreen />} />
-          <Route path='/users-lists' element={<UsersListScreen />} />
-        </Routes>
+        <GlobalStoreContextProvider>
+          <Header />
+          <Routes>
+            <Route path='/' element={<SplashScreen />} />
+            <Route path='/login' element={<LoginScreen />} />
+            <Route path='/register' element={<RegisterScreen />} />
+            <Route path='/home' element={<HomeScreen />} />
+            <Route path='/all-lists' element={<AllListsScreen />} />
+            <Route path='/users-lists' element={<UsersListScreen />} />
+          </Routes>
+        </GlobalStoreContextProvider>
       </AuthContextProvider>
     </Router>
   );

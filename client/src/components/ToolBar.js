@@ -2,6 +2,7 @@ import { React, useState } from 'react';
 import {
   AppBar,
   Box,
+  Grid,
   IconButton,
   Menu,
   MenuItem,
@@ -25,29 +26,36 @@ const ToolBar = () => {
     handleSortMenuClose();
   };
   return (
-    <Box sx={{ flexGrow: 1, mb: 2 }}>
+    <>
       <Toolbar>
-        <IconButton>
-          <Home />
-        </IconButton>
-        <IconButton>
-          <Group />
-        </IconButton>
-        <IconButton sx={{ mr: 2 }}>
-          <Person />
-        </IconButton>
-        <Box sx={{ width: '400px', bgcolor: '#ffffff' }}>
-          <TextField
-            fullWidth
-            id='outlined-basic'
-            label='Search'
-            variant='outlined'
-          />
-        </Box>
-        <Box sx={{ flexGrow: 1 }}></Box>
-        <IconButton onClick={handleSortMenuOpen}>
-          <Sort />
-        </IconButton>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={2} sx={{ fontSize: '35px' }}>
+            <IconButton>
+              <Home />
+            </IconButton>
+            <IconButton>
+              <Group />
+            </IconButton>
+            <IconButton sx={{ mr: 2 }}>
+              <Person />
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <TextField
+              fullWidth
+              id='outlined-basic'
+              label='Search'
+              variant='outlined'
+              size='small'
+              sx={{ bgcolor: '#ffffff' }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2}>
+            <IconButton onClick={handleSortMenuOpen}>
+              <Sort sx={{ fontSize: '30px' }} />
+            </IconButton>
+          </Grid>
+        </Grid>
       </Toolbar>
       <Menu
         anchorEl={anchorEl}
@@ -99,7 +107,7 @@ const ToolBar = () => {
           Dislikes
         </MenuItem>
       </Menu>
-    </Box>
+    </>
   );
 };
 

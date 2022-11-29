@@ -9,6 +9,13 @@ export const createPlaylist = (newListName, newSongs, userEmail) => {
     name: newListName,
     songs: newSongs,
     ownerEmail: userEmail,
+    isPublished: false,
+    publishDate: new Date(),
+    listensCount: 0,
+    likesCount: 0,
+    dislikesCount: 0,
+    comments: [],
+    interactedUsers: [],
   });
 };
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`);
@@ -23,8 +30,8 @@ export const updatePlaylistById = (id, playlist) => {
 const apis = {
   createPlaylist,
   deletePlaylistById,
-  getPlaylistById,
-  getPlaylistPairs,
+  getPublishedPlaylists,
+  updatePlaylistById,
   updatePlaylistById,
 };
 
