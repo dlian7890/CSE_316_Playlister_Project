@@ -1,20 +1,35 @@
 import { React, useContext, useEffect } from 'react';
 import { Box, Grid, IconButton } from '@mui/material';
+import { GlobalStoreContext } from '../store';
 import { Add } from '@mui/icons-material';
 import ToolBar from '../components/ToolBar';
-import { GlobalStoreContext } from '../store';
+import PlaylistCard from '../components/PlaylistCard';
 
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
 
   const handleAddPlaylist = () => {
     store.createNewList();
-    console.log('hello');
   };
 
   useEffect(() => {
     store.loadUsersLists();
   }, []);
+
+  let playlistCards = '';
+  if (store) {
+    playlistCards = (
+      <Box sx={{ m: 2 }}>
+        {store.visiblePlaylists.map((playlist) => (
+          <PlaylistCard
+            key={playlist._id}
+            playlist={playlist}
+            selected={false}
+          />
+        ))}
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -27,6 +42,7 @@ const HomeScreen = () => {
                 <Add />
               </IconButton>
             </Box>
+            {playlistCards}
           </Grid>
           <Grid item xs={12} sm={6}></Grid>
         </Grid>

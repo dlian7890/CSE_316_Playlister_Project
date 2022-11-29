@@ -4,13 +4,17 @@ const api = axios.create({
   baseURL: 'http://localhost:4000/api',
 });
 
-export const createPlaylist = (newListName, newSongs, userEmail) => {
+export const createPlaylist = (newListName, newSongs, ownerName) => {
   return api.post(`/playlist/`, {
     name: newListName,
     songs: newSongs,
-    ownerEmail: userEmail,
+    owner: ownerName,
     isPublished: false,
-    publishDate: new Date(),
+    publishDate: new Date().toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }),
     listensCount: 0,
     likesCount: 0,
     dislikesCount: 0,

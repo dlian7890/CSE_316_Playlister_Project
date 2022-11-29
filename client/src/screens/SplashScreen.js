@@ -1,9 +1,11 @@
-import React from 'react';
+import { React, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
+import AuthContext from '../auth';
 import './SplashScreen.css';
 
 const SplashScreen = () => {
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const handleRegister = () => {
     navigate('/register');
@@ -14,6 +16,12 @@ const SplashScreen = () => {
   const handleGuest = () => {
     navigate('/home');
   };
+
+  useEffect(() => {
+    if (auth.loggedIn) {
+      navigate('/home');
+    }
+  }, []);
 
   return (
     <Box

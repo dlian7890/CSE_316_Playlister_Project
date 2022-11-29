@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const playlistSchema = new Schema(
   {
     name: { type: String, required: true },
-    ownerEmail: { type: String, required: true },
+    owner: { type: String, required: true },
     songs: {
       type: [
         {
@@ -16,7 +16,7 @@ const playlistSchema = new Schema(
       required: true,
     },
     isPublished: { type: Boolean, required: true },
-    publishDate: { type: Date, required: true },
+    publishDate: { type: String, required: true },
     listensCount: { type: Number, required: true },
     likesCount: { type: Number, required: true },
     dislikesCount: { type: Number, required: true },

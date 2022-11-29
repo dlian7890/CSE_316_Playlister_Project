@@ -94,9 +94,8 @@ const GlobalStoreContextProvider = (props) => {
       const response = await api.getPlaylistsByUser();
       if (response.data.success) {
         let visiblePlaylists = response.data.playlists;
-        console.log(visiblePlaylists);
         storeReducer({
-          type: GlobalStoreActionType.LOAD_VISIBLE_LISTS,
+          type: GlobalStoreActionType.LOAD_PLAYLISTS,
           payload: visiblePlaylists,
         });
       } else {
@@ -112,7 +111,7 @@ const GlobalStoreContextProvider = (props) => {
       if (response.data.success) {
         let visiblePlaylists = response.data.visiblePlaylists;
         storeReducer({
-          type: GlobalStoreActionType.LOAD_VISIBLE_LISTS,
+          type: GlobalStoreActionType.LOAD_LISTS,
           payload: visiblePlaylists,
         });
       } else {
@@ -124,14 +123,52 @@ const GlobalStoreContextProvider = (props) => {
 
   store.createNewList = async () => {
     let newListName = 'Untitled';
-    const response = await api.createPlaylist(newListName, [], auth.user.email);
+    let ownerName = auth.user.firstName + ' ' + auth.user.lastName;
+    const response = await api.createPlaylist(newListName, [], ownerName);
     console.log('createNewList response: ' + response);
     if (response.status === 201) {
       let newList = response.data.playlist;
-      console.log(newList.name);
+      store.loadUsersLists();
     } else {
       console.log('API FAILED TO CREATE A NEW LIST');
     }
+  };
+
+  store.selectList = (playlist) => {
+    storeReducer({
+      type: GlobalStoreActionType.SELECT_LIST,
+      payload: playlist,
+    });
+  };
+
+  store.unselectList = () => {
+    storeReducer({
+      type: GlobalStoreActionType.SELECT_LIST,
+      payload: null,
+    });
+  };
+
+  store.updateCurrentList = () => {
+    const asyncUpdateCurrentList = async () => {
+      const response = await api.updatePlaylistById(
+        store.selectedList._id,
+        store.selectedList
+      );
+      if (response.data.success) {
+        storeReducer({
+          type: GlobalStoreActionType.SELECT_LIST,
+          payload: store.selectedList,
+        });
+      }
+    };
+    asyncUpdateCurrentList();
+  };
+
+  store.createSong = (index, song) => {
+    let list = store.currentList;
+    list.songs.splice(index, 0, song);
+    // NOW MAKE IT OFFICIAL
+    store.updateCurrentList();
   };
 
   return (

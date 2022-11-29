@@ -4,9 +4,9 @@ const User = require('../models/user-model');
 getPlaylistsByUser = async (req, res) => {
   await User.findOne({ _id: req.userId }, (err, user) => {
     console.log('find user with id ' + req.userId);
-    async function asyncFindList(email) {
-      console.log('find all Playlists owned by ' + email);
-      await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+    async function asyncFindList(username) {
+      console.log('find all Playlists owned by ' + username);
+      await Playlist.find({ ownerUsername: username }, (err, playlists) => {
         console.log('found Playlists: ' + JSON.stringify(playlists));
         if (err) {
           return res.status(400).json({ success: false, error: err });
@@ -32,7 +32,7 @@ getPlaylistsByUser = async (req, res) => {
         }
       }).catch((err) => console.log(err));
     }
-    asyncFindList(user.email);
+    asyncFindList(user.username);
   }).catch((err) => console.log(err));
 };
 
