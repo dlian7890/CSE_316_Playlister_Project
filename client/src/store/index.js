@@ -89,6 +89,23 @@ const GlobalStoreContextProvider = (props) => {
     }
   };
 
+  store.loadUsersLists = async () => {
+    const asyncLoadUsersLists = async () => {
+      const response = await api.getPlaylistsByUser();
+      if (response.data.success) {
+        let visiblePlaylists = response.data.playlists;
+        console.log(visiblePlaylists);
+        storeReducer({
+          type: GlobalStoreActionType.LOAD_VISIBLE_LISTS,
+          payload: visiblePlaylists,
+        });
+      } else {
+        console.log('API FAILED TO GET THE USERS LISTS');
+      }
+    };
+    asyncLoadUsersLists();
+  };
+
   store.loadVisibleLists = async () => {
     const asyncLoadVisibleLists = async () => {
       const response = await api.getVisiblePlaylists();

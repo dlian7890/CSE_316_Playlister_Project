@@ -1,6 +1,41 @@
 const Playlist = require('../models/playlist-model');
 const User = require('../models/user-model');
 
+getPlaylistsByUser = async (req, res) => {
+  await User.findOne({ _id: req.userId }, (err, user) => {
+    console.log('find user with id ' + req.userId);
+    async function asyncFindList(email) {
+      console.log('find all Playlists owned by ' + email);
+      await Playlist.find({ ownerEmail: email }, (err, playlists) => {
+        console.log('found Playlists: ' + JSON.stringify(playlists));
+        if (err) {
+          return res.status(400).json({ success: false, error: err });
+        }
+        if (!playlists) {
+          console.log('!playlists.length');
+          return res
+            .status(404)
+            .json({ success: false, error: 'Playlists not found' });
+        } else {
+          console.log('Playlists found');
+          // PUT ALL THE LISTS INTO ID, NAME PAIRS
+          // let pairs = [];
+          // for (let key in playlists) {
+          //   let list = playlists[key];
+          //   let pair = {
+          //     _id: list._id,
+          //     name: list.name,
+          //   };
+          //   pairs.push(pair);
+          // }
+          return res.status(200).json({ success: true, playlists: playlists });
+        }
+      }).catch((err) => console.log(err));
+    }
+    asyncFindList(user.email);
+  }).catch((err) => console.log(err));
+};
+
 createPlaylist = (req, res) => {
   const body = req.body;
   console.log('createPlaylist body: ' + JSON.stringify(body));
@@ -211,6 +246,7 @@ updatePlaylist = async (req, res) => {
   });
 };
 module.exports = {
+  getPlaylistsByUser,
   createPlaylist,
   deletePlaylist,
   getPlaylistById,

@@ -30,6 +30,7 @@ export const updatePlaylistById = (id, playlist) => {
 const apis = {
   createPlaylist,
   deletePlaylistById,
+  getPlaylistsByUser,
   getPublishedPlaylists,
   updatePlaylistById,
   updatePlaylistById,

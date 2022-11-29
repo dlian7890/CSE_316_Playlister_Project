@@ -1,4 +1,4 @@
-import { React, useContext } from 'react';
+import { React, useContext, useEffect } from 'react';
 import { Box, Grid, IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import ToolBar from '../components/ToolBar';
@@ -6,10 +6,16 @@ import { GlobalStoreContext } from '../store';
 
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
+
   const handleAddPlaylist = () => {
     store.createNewList();
     console.log('hello');
   };
+
+  useEffect(() => {
+    store.loadUsersLists();
+  }, []);
+
   return (
     <>
       <Box sx={{ bgcolor: '#f6f6f6' }}>
