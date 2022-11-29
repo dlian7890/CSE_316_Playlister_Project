@@ -15,23 +15,7 @@ const PlaylistCard = (props) => {
   const [selected, setSelected] = useState(false);
   const { store } = useContext(GlobalStoreContext);
 
-  // let songCards = '';
-  // if (selected) {
-  //   songCards = (
-  //     <Grid item xs={12}>
-  //       <Box>
-  //         <IconButton onClick={handleAddSong}>
-  //           <Add />
-  //         </IconButton>
-  //       </Box>
-  //       {playlist.songs.map((song, index) => (
-  //         <SongCard index={index} song={song} />
-  //       ))}
-  //     </Grid>
-  //   );
-  // } else songCards = '';
   useEffect(() => {
-    console.log(store.selectedList);
     if (store.selectedList === null || store.selectedList._id !== playlist._id)
       setSelected(false);
   }, [store.selectedList]);
@@ -42,7 +26,9 @@ const PlaylistCard = (props) => {
     setSelected(!selected);
   };
 
-  const handleAddSong = () => {};
+  const handleAddSong = () => {
+    store.addNewSong();
+  };
 
   return (
     <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2 }}>

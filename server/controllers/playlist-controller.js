@@ -240,7 +240,7 @@ updatePlaylist = async (req, res) => {
             .status(400)
             .json({ success: false, description: 'authentication error' });
         }
-      });
+      }).catch((err) => console.log(err));
     }
     asyncFindUser(playlist);
   });

@@ -4,11 +4,17 @@ const api = axios.create({
   baseURL: 'http://localhost:4000/api',
 });
 
-export const createPlaylist = (newListName, newSongs, ownerName) => {
+export const createPlaylist = (
+  newListName,
+  newSongs,
+  ownerName,
+  ownerEmail
+) => {
   return api.post(`/playlist/`, {
     name: newListName,
     songs: newSongs,
-    owner: ownerName,
+    ownerName: ownerName,
+    ownerEmail: ownerEmail,
     isPublished: false,
     publishDate: new Date().toLocaleDateString('en-us', {
       year: 'numeric',
@@ -36,7 +42,6 @@ const apis = {
   deletePlaylistById,
   getPlaylistsByUser,
   getPublishedPlaylists,
-  updatePlaylistById,
   updatePlaylistById,
 };
 

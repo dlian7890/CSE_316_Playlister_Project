@@ -124,7 +124,13 @@ const GlobalStoreContextProvider = (props) => {
   store.createNewList = async () => {
     let newListName = 'Untitled';
     let ownerName = auth.user.firstName + ' ' + auth.user.lastName;
-    const response = await api.createPlaylist(newListName, [], ownerName);
+    let ownerEmail = auth.user.email;
+    const response = await api.createPlaylist(
+      newListName,
+      [],
+      ownerName,
+      ownerEmail
+    );
     console.log('createNewList response: ' + response);
     if (response.status === 201) {
       let newList = response.data.playlist;
@@ -150,25 +156,32 @@ const GlobalStoreContextProvider = (props) => {
 
   store.updateCurrentList = () => {
     const asyncUpdateCurrentList = async () => {
+      console.log('LIST being updated');
       const response = await api.updatePlaylistById(
         store.selectedList._id,
         store.selectedList
       );
       if (response.data.success) {
-        storeReducer({
-          type: GlobalStoreActionType.SELECT_LIST,
-          payload: store.selectedList,
-        });
+        store.loadUsersLists();
       }
     };
     asyncUpdateCurrentList();
   };
 
   store.createSong = (index, song) => {
-    let list = store.currentList;
+    let list = store.selectedList;
     list.songs.splice(index, 0, song);
-    // NOW MAKE IT OFFICIAL
     store.updateCurrentList();
+  };
+
+  store.addNewSong = () => {
+    let playlistSize = store.selectedList.songs.length;
+    let song = {
+      title: 'Untitled',
+      artist: '?',
+      youTubeId: 'dQw4w9WgXcQ',
+    };
+    store.createSong(playlistSize, song);
   };
 
   return (
