@@ -9,6 +9,8 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import SplashScreen from './screens/SplashScreen';
 import UsersListScreen from './screens/UsersListScreen';
+import DeleteListModal from './components/Modals/DeleteListModal';
+import DeleteSongModal from './components/Modals/DeleteSongModal';
 
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
             <Route path='/all-lists' element={<AllListsScreen />} />
             <Route path='/users-lists' element={<UsersListScreen />} />
           </Routes>
+          <DeleteListModal />
+          <DeleteSongModal />
         </GlobalStoreContextProvider>
       </AuthContextProvider>
     </Router>

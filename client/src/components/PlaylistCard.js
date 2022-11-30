@@ -7,7 +7,7 @@ import {
   ExpandLess,
   Add,
 } from '@mui/icons-material';
-import { GlobalStoreContext } from '../store';
+import { CurrentModal, GlobalStoreContext } from '../store';
 import SongCard from './SongCard';
 
 const PlaylistCard = (props) => {
@@ -32,7 +32,7 @@ const PlaylistCard = (props) => {
   };
 
   const handleDeletePlaylist = () => {
-    store.deleteList(playlist._id);
+    store.setModal(CurrentModal.DELETE_LIST);
   };
 
   return (
@@ -56,7 +56,15 @@ const PlaylistCard = (props) => {
       </Grid>
       {selected && (
         <Grid item xs={12}>
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              bgcolor: '#f6f6f6',
+              mb: 2,
+              p: 1,
+            }}
+          >
             <IconButton onClick={handleAddSong}>
               <Add />
             </IconButton>
@@ -66,27 +74,31 @@ const PlaylistCard = (props) => {
           ))}
         </Grid>
       )}
-      <Grid item xs={6}>
-        <Button variant='contained' sx={{ mr: 2 }}>
-          Undo
-        </Button>
-        <Button variant='contained'>Redo</Button>
-      </Grid>
-      <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'right' }}>
-        <Button variant='contained' sx={{ mr: 2 }}>
-          Publish
-        </Button>
-        <Button
-          variant='contained'
-          onClick={handleDeletePlaylist}
-          sx={{ mr: 2 }}
-        >
-          Delete
-        </Button>
-        <Button variant='contained' sx={{ mr: 2 }}>
-          Duplicate
-        </Button>
-      </Grid>
+      {selected && (
+        <>
+          <Grid item xs={6}>
+            <Button variant='contained' sx={{ mr: 2 }}>
+              Undo
+            </Button>
+            <Button variant='contained'>Redo</Button>
+          </Grid>
+          <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'right' }}>
+            <Button variant='contained' sx={{ mr: 2 }}>
+              Publish
+            </Button>
+            <Button
+              variant='contained'
+              onClick={handleDeletePlaylist}
+              sx={{ mr: 2 }}
+            >
+              Delete
+            </Button>
+            <Button variant='contained' sx={{ mr: 2 }}>
+              Duplicate
+            </Button>
+          </Grid>
+        </>
+      )}
       <Grid item xs={6}>
         <Typography>Published: {playlist.publishDate}</Typography>
       </Grid>

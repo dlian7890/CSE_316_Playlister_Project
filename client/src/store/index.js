@@ -15,11 +15,20 @@ export const GlobalStoreActionType = {
   CREATE_NEW_LIST: 'CREATE_NEW_LIST',
   SET_CURRENT_SCREEN: 'SET_CURRENT_SCREEN',
   SELECT_SONG: 'SELECT_SONG',
+  SET_MODAL: 'SET_MODAL',
+};
+
+export const CurrentModal = {
+  NONE: 'NONE',
+  DELETE_LIST: 'DELETE_LIST',
+  EDIT_SONG: 'EDIT_SONG',
+  DELETE_SONG: 'DELETE_SONG',
 };
 
 const GlobalStoreContextProvider = (props) => {
   const [store, setStore] = useState({
     currentScreen: '',
+    currentModal: CurrentModal.NONE,
     visiblePlaylists: [],
     selectedList: null,
     selectedSongIndex: -1,
@@ -42,46 +51,62 @@ const GlobalStoreContextProvider = (props) => {
       case GlobalStoreActionType.LOAD_PLAYLISTS: {
         return setStore({
           currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
           visiblePlaylists: payload,
           selectedList: store.selectedList,
-          selectedSongIndex: -1,
-          selectedSong: null,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
         return setStore({
           currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: payload,
-          selectedSongIndex: -1,
-          selectedSong: null,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
         return setStore({
           currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
           visiblePlaylists: payload,
           selectedList: null,
-          selectedSongIndex: -1,
-          selectedSong: null,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
         return setStore({
           currentScreen: payload,
+          currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: null,
-          selectedSongIndex: -1,
-          selectedSong: null,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
         });
       }
       case GlobalStoreActionType.SELECT_SONG: {
+        console.log(payload.song);
         return setStore({
           currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
-          selectedList: store.currentScreen,
+          selectedList: store.selectedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
+        });
+      }
+      case GlobalStoreActionType.SET_MODAL: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: payload,
+          visiblePlaylists: store.visiblePlaylists,
+          selectedList: store.selectedList,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
         });
       }
       default:
@@ -119,6 +144,23 @@ const GlobalStoreContextProvider = (props) => {
       }
     };
     asyncLoadVisibleLists();
+  };
+
+  store.setModal = (modalType) => {
+    storeReducer({
+      type: GlobalStoreActionType.SET_MODAL,
+      payload: modalType,
+    });
+  };
+
+  store.isDeleteListModalOpen = () => {
+    return store.currentModal === CurrentModal.DELETE_LIST;
+  };
+  store.isEditSongModalOpen = () => {
+    return store.currentModal === CurrentModal.EDIT_SONG;
+  };
+  store.isDeleteSongModalOpen = () => {
+    return store.currentModal === CurrentModal.DELETE_SONG;
   };
 
   store.createNewList = async () => {
@@ -168,6 +210,13 @@ const GlobalStoreContextProvider = (props) => {
     asyncUpdateSelectedList();
   };
 
+  store.selectSong = (index, song) => {
+    storeReducer({
+      type: GlobalStoreActionType.SELECT_SONG,
+      payload: { index: index, song: song },
+    });
+  };
+
   store.createSong = (index, song) => {
     let list = store.selectedList;
     list.songs.splice(index, 0, song);
@@ -182,6 +231,12 @@ const GlobalStoreContextProvider = (props) => {
       youTubeId: 'dQw4w9WgXcQ',
     };
     store.createSong(playlistSize, song);
+  };
+
+  store.deleteSong = () => {
+    let list = store.selectedList;
+    list.songs.splice(store.selectedSongIndex, 1);
+    store.updateSelectedList();
   };
 
   return (
