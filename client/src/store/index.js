@@ -43,7 +43,7 @@ const GlobalStoreContextProvider = (props) => {
         return setStore({
           currentScreen: store.currentScreen,
           visiblePlaylists: payload,
-          selectedList: null,
+          selectedList: store.selectedList,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -140,6 +140,14 @@ const GlobalStoreContextProvider = (props) => {
     }
   };
 
+  store.deleteList = (id) => {
+    async function processDelete(id) {
+      let response = await api.deletePlaylistById(id);
+      store.loadUsersLists();
+    }
+    processDelete(id);
+  };
+
   store.selectList = (playlist) => {
     storeReducer({
       type: GlobalStoreActionType.SELECT_LIST,
@@ -147,16 +155,8 @@ const GlobalStoreContextProvider = (props) => {
     });
   };
 
-  store.unselectList = () => {
-    storeReducer({
-      type: GlobalStoreActionType.SELECT_LIST,
-      payload: null,
-    });
-  };
-
-  store.updateCurrentList = () => {
-    const asyncUpdateCurrentList = async () => {
-      console.log('LIST being updated');
+  store.updateSelectedList = () => {
+    const asyncUpdateSelectedList = async () => {
       const response = await api.updatePlaylistById(
         store.selectedList._id,
         store.selectedList
@@ -165,13 +165,13 @@ const GlobalStoreContextProvider = (props) => {
         store.loadUsersLists();
       }
     };
-    asyncUpdateCurrentList();
+    asyncUpdateSelectedList();
   };
 
   store.createSong = (index, song) => {
     let list = store.selectedList;
     list.songs.splice(index, 0, song);
-    store.updateCurrentList();
+    store.updateSelectedList();
   };
 
   store.addNewSong = () => {

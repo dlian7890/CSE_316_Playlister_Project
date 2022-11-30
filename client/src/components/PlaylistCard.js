@@ -1,5 +1,5 @@
 import { React, useContext, useEffect, useState } from 'react';
-import { Box, Grid, IconButton, Typography } from '@mui/material';
+import { Box, Button, Grid, IconButton, Typography } from '@mui/material';
 import {
   ThumbUp,
   ThumbDown,
@@ -18,11 +18,12 @@ const PlaylistCard = (props) => {
   useEffect(() => {
     if (store.selectedList === null || store.selectedList._id !== playlist._id)
       setSelected(false);
+    else if (store.selectedList._id === playlist._id) setSelected(true);
   }, [store.selectedList]);
 
   const handleToggleList = () => {
     if (!selected) store.selectList(playlist);
-    else store.unselectList();
+    else store.selectList(null);
     setSelected(!selected);
   };
 
@@ -30,12 +31,16 @@ const PlaylistCard = (props) => {
     store.addNewSong();
   };
 
+  const handleDeletePlaylist = () => {
+    store.deleteList(playlist._id);
+  };
+
   return (
-    <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2 }}>
+    <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2, m: 2 }}>
       <Grid item xs={6}>
         <Box>
           <Typography>{playlist.name}</Typography>
-          <Typography>By: {playlist.owner}</Typography>
+          <Typography>By: {playlist.ownerName}</Typography>
         </Box>
       </Grid>
       <Grid item xs={6}>
@@ -61,6 +66,27 @@ const PlaylistCard = (props) => {
           ))}
         </Grid>
       )}
+      <Grid item xs={6}>
+        <Button variant='contained' sx={{ mr: 2 }}>
+          Undo
+        </Button>
+        <Button variant='contained'>Redo</Button>
+      </Grid>
+      <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'right' }}>
+        <Button variant='contained' sx={{ mr: 2 }}>
+          Publish
+        </Button>
+        <Button
+          variant='contained'
+          onClick={handleDeletePlaylist}
+          sx={{ mr: 2 }}
+        >
+          Delete
+        </Button>
+        <Button variant='contained' sx={{ mr: 2 }}>
+          Duplicate
+        </Button>
+      </Grid>
       <Grid item xs={6}>
         <Typography>Published: {playlist.publishDate}</Typography>
       </Grid>
