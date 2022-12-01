@@ -1,20 +1,22 @@
 import { createContext, useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import jsTPS from '../common/jsTPS';
+import jsTPS from '../common/jsTPS';
 import api from './store-request-api';
 import AuthContext from '../auth';
+import CreateSong_Transaction from '../transactions/CreateSong_Transaction';
+import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction';
 
 export const GlobalStoreContext = createContext({});
 console.log('create GlobalStoreContext');
 
-// const tps = new jsTPS();
+const tps = new jsTPS();
 
 export const GlobalStoreActionType = {
   LOAD_PLAYLISTS: 'LOAD_PLAYLISTS',
   SELECT_LIST: 'SELECT_LIST',
   CREATE_NEW_LIST: 'CREATE_NEW_LIST',
   SET_CURRENT_SCREEN: 'SET_CURRENT_SCREEN',
-  SELECT_SONG: 'SELECT_SONG',
+  DELETE_SONG: 'DELETE_SONG',
   SET_MODAL: 'SET_MODAL',
 };
 
@@ -51,7 +53,7 @@ const GlobalStoreContextProvider = (props) => {
       case GlobalStoreActionType.LOAD_PLAYLISTS: {
         return setStore({
           currentScreen: store.currentScreen,
-          currentModal: store.currentModal,
+          currentModal: CurrentModal.NONE,
           visiblePlaylists: payload,
           selectedList: store.selectedList,
           selectedSongIndex: store.selectedSongIndex,
@@ -88,11 +90,10 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: store.selectedSong,
         });
       }
-      case GlobalStoreActionType.SELECT_SONG: {
-        console.log(payload.song);
+      case GlobalStoreActionType.DELETE_SONG: {
         return setStore({
           currentScreen: store.currentScreen,
-          currentModal: store.currentModal,
+          currentModal: CurrentModal.DELETE_SONG,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
           selectedSongIndex: payload.index,
@@ -156,11 +157,11 @@ const GlobalStoreContextProvider = (props) => {
   store.isDeleteListModalOpen = () => {
     return store.currentModal === CurrentModal.DELETE_LIST;
   };
-  store.isEditSongModalOpen = () => {
-    return store.currentModal === CurrentModal.EDIT_SONG;
-  };
   store.isDeleteSongModalOpen = () => {
     return store.currentModal === CurrentModal.DELETE_SONG;
+  };
+  store.isEditSongModalOpen = () => {
+    return store.currentModal === CurrentModal.EDIT_SONG;
   };
 
   store.createNewList = async () => {
@@ -225,18 +226,61 @@ const GlobalStoreContextProvider = (props) => {
 
   store.addNewSong = () => {
     let playlistSize = store.selectedList.songs.length;
-    let song = {
-      title: 'Untitled',
-      artist: '?',
-      youTubeId: 'dQw4w9WgXcQ',
-    };
-    store.createSong(playlistSize, song);
+    store.addCreateSongTransaction(
+      playlistSize,
+      'Untitled',
+      '?',
+      'dQw4w9WgXcQ'
+    );
+    // store.createSong(playlistSize, song);
   };
 
-  store.deleteSong = () => {
+  store.deleteSong = (index) => {
     let list = store.selectedList;
     list.songs.splice(store.selectedSongIndex, 1);
     store.updateSelectedList();
+  };
+
+  store.undo = () => {
+    tps.undoTransaction();
+  };
+
+  store.redo = () => {
+    tps.doTransaction();
+  };
+
+  store.clearAllTransactions = () => {
+    tps.clearAllTransactions();
+  };
+
+  store.canUndo = () => {
+    return tps.hasTransactionToUndo();
+  };
+
+  store.canRedo = () => {
+    return tps.hasTransactionToRedo();
+  };
+
+  store.addCreateSongTransaction = (index, title, artist, youTubeId) => {
+    let song = {
+      title: title,
+      artist: artist,
+      youTubeId: youTubeId,
+    };
+    let transaction = new CreateSong_Transaction(store, index, song);
+    tps.addTransaction(transaction);
+  };
+
+  store.addDeleteSongTransaction = (index, song) => {
+    let transaction = new DeleteSong_Transaction(store, index, song);
+    tps.addTransaction(transaction);
+  };
+
+  store.showDeleteSongModal = (index, song) => {
+    storeReducer({
+      type: GlobalStoreActionType.DELETE_SONG,
+      payload: { song: song, index: index },
+    });
   };
 
   return (

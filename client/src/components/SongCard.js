@@ -9,8 +9,7 @@ const SongCard = (props) => {
   const { song, index } = props;
 
   const handleDeleteSong = () => {
-    store.selectSong(index, song);
-    store.setModal(CurrentModal.DELETE_SONG);
+    store.showDeleteSongModal(index, song);
   };
 
   return (

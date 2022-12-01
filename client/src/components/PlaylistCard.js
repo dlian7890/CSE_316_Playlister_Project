@@ -35,6 +35,14 @@ const PlaylistCard = (props) => {
     store.setModal(CurrentModal.DELETE_LIST);
   };
 
+  const handleUndo = () => {
+    store.undo();
+  };
+
+  const handleRedo = () => {
+    store.redo();
+  };
+
   return (
     <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2, m: 2 }}>
       <Grid item xs={6}>
@@ -77,10 +85,21 @@ const PlaylistCard = (props) => {
       {selected && (
         <>
           <Grid item xs={6}>
-            <Button variant='contained' sx={{ mr: 2 }}>
+            <Button
+              variant='contained'
+              disabled={!store.canUndo()}
+              onClick={handleUndo}
+              sx={{ mr: 2 }}
+            >
               Undo
             </Button>
-            <Button variant='contained'>Redo</Button>
+            <Button
+              variant='contained'
+              disabled={!store.canRedo()}
+              onClick={handleRedo}
+            >
+              Redo
+            </Button>
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'right' }}>
             <Button variant='contained' sx={{ mr: 2 }}>

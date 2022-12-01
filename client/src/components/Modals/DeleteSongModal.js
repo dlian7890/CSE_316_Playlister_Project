@@ -1,4 +1,4 @@
-import { React, useContext } from 'react';
+import { React, useContext, useEffect } from 'react';
 import { Box, Button, Modal, Grid, Typography } from '@mui/material';
 import { CurrentModal, GlobalStoreContext } from '../../store';
 
@@ -18,7 +18,7 @@ const DeleteSongModal = () => {
   const { store } = useContext(GlobalStoreContext);
 
   const handleConfirmDeleteSong = () => {
-    store.deleteSong();
+    store.addDeleteSongTransaction(store.selectedSongIndex, store.selectedSong);
     store.setModal(CurrentModal.NONE);
   };
 
@@ -27,10 +27,13 @@ const DeleteSongModal = () => {
   };
 
   let songTitle = '';
-  // if (store.isDeleteSongModalOpen()) {
-  //   console.log(store.selectedSongIndex);
-  //   songTitle = store.selectedSong.title;
-  // }
+  if (store.isDeleteSongModalOpen()) {
+    songTitle = store.selectedSong.title;
+  }
+
+  useEffect(() => {
+    console.log('AAAAAAAAAAAAAAAAAA');
+  }, [store.currentModal]);
   return (
     <Modal open={store.isDeleteSongModalOpen()}>
       <Box sx={style}>

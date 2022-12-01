@@ -22,10 +22,11 @@ const DeleteListModal = () => {
     store.deleteList(store.selectedList._id);
     store.setModal(CurrentModal.NONE);
   };
+
   const handleCancelDeleteList = () => {
     store.setModal(CurrentModal.NONE);
   };
-  
+
   return (
     <Modal open={store.isDeleteListModalOpen()}>
       <Box sx={style}>
