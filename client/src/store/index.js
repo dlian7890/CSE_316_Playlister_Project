@@ -5,6 +5,7 @@ import api from './store-request-api';
 import AuthContext from '../auth';
 import CreateSong_Transaction from '../transactions/CreateSong_Transaction';
 import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction';
+import EditSong_Transaction from '../transactions/EditSong_Transaction';
 
 export const GlobalStoreContext = createContext({});
 console.log('create GlobalStoreContext');
@@ -17,6 +18,7 @@ export const GlobalStoreActionType = {
   CREATE_NEW_LIST: 'CREATE_NEW_LIST',
   SET_CURRENT_SCREEN: 'SET_CURRENT_SCREEN',
   DELETE_SONG: 'DELETE_SONG',
+  EDIT_SONG: 'EDIT_SONG',
   SET_MODAL: 'SET_MODAL',
 };
 
@@ -56,8 +58,8 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: CurrentModal.NONE,
           visiblePlaylists: payload,
           selectedList: store.selectedList,
-          selectedSongIndex: store.selectedSongIndex,
-          selectedSong: store.selectedSong,
+          selectedSongIndex: -1,
+          selectedSong: null,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -66,8 +68,8 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: payload,
-          selectedSongIndex: store.selectedSongIndex,
-          selectedSong: store.selectedSong,
+          selectedSongIndex: -1,
+          selectedSong: null,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -76,8 +78,8 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: payload,
           selectedList: null,
-          selectedSongIndex: store.selectedSongIndex,
-          selectedSong: store.selectedSong,
+          selectedSongIndex: -1,
+          selectedSong: null,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -86,8 +88,8 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: null,
-          selectedSongIndex: store.selectedSongIndex,
-          selectedSong: store.selectedSong,
+          selectedSongIndex: -1,
+          selectedSong: null,
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -100,14 +102,24 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: payload.song,
         });
       }
+      case GlobalStoreActionType.EDIT_SONG: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: CurrentModal.EDIT_SONG,
+          visiblePlaylists: store.visiblePlaylists,
+          selectedList: store.selectedList,
+          selectedSongIndex: payload.index,
+          selectedSong: payload.song,
+        });
+      }
       case GlobalStoreActionType.SET_MODAL: {
         return setStore({
           currentScreen: store.currentScreen,
           currentModal: payload,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
-          selectedSongIndex: store.selectedSongIndex,
-          selectedSong: store.selectedSong,
+          selectedSongIndex: -1,
+          selectedSong: null,
         });
       }
       default:
@@ -196,6 +208,7 @@ const GlobalStoreContextProvider = (props) => {
       type: GlobalStoreActionType.SELECT_LIST,
       payload: playlist,
     });
+    store.clearAllTransactions();
   };
 
   store.updateSelectedList = () => {
@@ -211,13 +224,6 @@ const GlobalStoreContextProvider = (props) => {
     asyncUpdateSelectedList();
   };
 
-  store.selectSong = (index, song) => {
-    storeReducer({
-      type: GlobalStoreActionType.SELECT_SONG,
-      payload: { index: index, song: song },
-    });
-  };
-
   store.createSong = (index, song) => {
     let list = store.selectedList;
     list.songs.splice(index, 0, song);
@@ -226,18 +232,28 @@ const GlobalStoreContextProvider = (props) => {
 
   store.addNewSong = () => {
     let playlistSize = store.selectedList.songs.length;
-    store.addCreateSongTransaction(
-      playlistSize,
-      'Untitled',
-      '?',
-      'dQw4w9WgXcQ'
-    );
+    let song = {
+      title: 'Untitled',
+      artist: '?',
+      youTubeId: 'dQw4w9WgXcQ',
+    };
+    store.addCreateSongTransaction(playlistSize, song);
     // store.createSong(playlistSize, song);
   };
 
   store.deleteSong = (index) => {
     let list = store.selectedList;
-    list.songs.splice(store.selectedSongIndex, 1);
+    list.songs.splice(index, 1);
+    store.updateSelectedList();
+  };
+
+  store.editSong = (index, newSong) => {
+    let list = store.selectedList;
+    let song = list.songs[index];
+    song.title = newSong.title;
+    song.artist = newSong.artist;
+    song.youTubeId = newSong.youTubeId;
+
     store.updateSelectedList();
   };
 
@@ -261,24 +277,45 @@ const GlobalStoreContextProvider = (props) => {
     return tps.hasTransactionToRedo();
   };
 
-  store.addCreateSongTransaction = (index, title, artist, youTubeId) => {
-    let song = {
-      title: title,
-      artist: artist,
-      youTubeId: youTubeId,
-    };
+  store.addCreateSongTransaction = (index, song) => {
     let transaction = new CreateSong_Transaction(store, index, song);
     tps.addTransaction(transaction);
   };
 
-  store.addDeleteSongTransaction = (index, song) => {
-    let transaction = new DeleteSong_Transaction(store, index, song);
+  store.addDeleteSongTransaction = () => {
+    let index = store.selectedSongIndex;
+    let song = store.selectedSong;
+    let deletedSong = {
+      title: song.title,
+      artist: song.artist,
+      youTubeId: song.youTubeId,
+    };
+    let transaction = new DeleteSong_Transaction(store, index, deletedSong);
+    tps.addTransaction(transaction);
+  };
+
+  store.addEditSongTransaction = (newSong) => {
+    let index = store.selectedSongIndex;
+    let song = store.selectedSong;
+    let oldSong = {
+      title: song.title,
+      artist: song.artist,
+      youTubeId: song.youTubeId,
+    };
+    let transaction = new EditSong_Transaction(store, index, oldSong, newSong);
     tps.addTransaction(transaction);
   };
 
   store.showDeleteSongModal = (index, song) => {
     storeReducer({
       type: GlobalStoreActionType.DELETE_SONG,
+      payload: { song: song, index: index },
+    });
+  };
+
+  store.showEditSongModal = (index, song) => {
+    storeReducer({
+      type: GlobalStoreActionType.EDIT_SONG,
       payload: { song: song, index: index },
     });
   };

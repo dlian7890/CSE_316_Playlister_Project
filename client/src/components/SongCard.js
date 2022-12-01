@@ -12,6 +12,10 @@ const SongCard = (props) => {
     store.showDeleteSongModal(index, song);
   };
 
+  const handleEditSong = () => {
+    store.showEditSongModal(index, song);
+  };
+
   return (
     <Box
       key={index}
@@ -23,6 +27,7 @@ const SongCard = (props) => {
         display: 'flex',
         justifyContent: 'space-between',
       }}
+      onDoubleClick={handleEditSong}
     >
       <Box>
         {index + 1}.{' '}

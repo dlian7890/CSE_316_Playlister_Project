@@ -11,6 +11,7 @@ import SplashScreen from './screens/SplashScreen';
 import UsersListScreen from './screens/UsersListScreen';
 import DeleteListModal from './components/Modals/DeleteListModal';
 import DeleteSongModal from './components/Modals/DeleteSongModal';
+import EditSongModal from './components/Modals/EditSongModal';
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           </Routes>
           <DeleteListModal />
           <DeleteSongModal />
+          <EditSongModal />
         </GlobalStoreContextProvider>
       </AuthContextProvider>
     </Router>
