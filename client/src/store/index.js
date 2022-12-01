@@ -6,6 +6,7 @@ import AuthContext from '../auth';
 import CreateSong_Transaction from '../transactions/CreateSong_Transaction';
 import DeleteSong_Transaction from '../transactions/DeleteSong_Transaction';
 import EditSong_Transaction from '../transactions/EditSong_Transaction';
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction';
 
 export const GlobalStoreContext = createContext({});
 console.log('create GlobalStoreContext');
@@ -257,6 +258,25 @@ const GlobalStoreContextProvider = (props) => {
     store.updateSelectedList();
   };
 
+  store.moveSong = (start, end) => {
+    let list = store.selectedList;
+    if (start < end) {
+      let temp = list.songs[start];
+      for (let i = start; i < end; i++) {
+        list.songs[i] = list.songs[i + 1];
+      }
+      list.songs[end] = temp;
+    } else if (start > end) {
+      let temp = list.songs[start];
+      for (let i = start; i > end; i--) {
+        list.songs[i] = list.songs[i - 1];
+      }
+      list.songs[end] = temp;
+    }
+
+    store.updateSelectedList();
+  };
+
   store.undo = () => {
     tps.undoTransaction();
   };
@@ -298,6 +318,11 @@ const GlobalStoreContextProvider = (props) => {
       youTubeId: song.youTubeId,
     };
     let transaction = new EditSong_Transaction(store, index, oldSong, newSong);
+    tps.addTransaction(transaction);
+  };
+
+  store.addMoveSongTransaction = (start, end) => {
+    let transaction = new MoveSong_Transaction(store, start, end);
     tps.addTransaction(transaction);
   };
 

@@ -8,6 +8,32 @@ const SongCard = (props) => {
   const [draggedTo, setDraggedTo] = useState(0);
   const { song, index } = props;
 
+  const handleDragStart = (event) => {
+    event.dataTransfer.setData('song', index);
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+  };
+
+  const handleDragEnter = (event) => {
+    event.preventDefault();
+    setDraggedTo(true);
+  };
+
+  const handleDragLeave = (event) => {
+    event.preventDefault();
+    setDraggedTo(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    let targetIndex = index;
+    let sourceIndex = Number(event.dataTransfer.getData('song'));
+    setDraggedTo(false);
+    store.addMoveSongTransaction(sourceIndex, targetIndex);
+  };
+
   const handleDeleteSong = () => {
     store.showDeleteSongModal(index, song);
   };
@@ -27,6 +53,12 @@ const SongCard = (props) => {
         display: 'flex',
         justifyContent: 'space-between',
       }}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      draggable='true'
       onDoubleClick={handleEditSong}
     >
       <Box>
