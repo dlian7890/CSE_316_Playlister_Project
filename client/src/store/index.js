@@ -225,6 +225,21 @@ const GlobalStoreContextProvider = (props) => {
     asyncUpdateSelectedList();
   };
 
+  store.changeListName = (playlist, newName) => {
+    let updatedPlaylist = playlist;
+    updatedPlaylist.name = newName;
+    const updateList = async (playlist) => {
+      let response = await api.updatePlaylistById(
+        playlist._id,
+        updatedPlaylist
+      );
+      if (response.data.success) {
+        store.loadUsersLists();
+      }
+    };
+    updateList(playlist);
+  };
+
   store.createSong = (index, song) => {
     let list = store.selectedList;
     list.songs.splice(index, 0, song);

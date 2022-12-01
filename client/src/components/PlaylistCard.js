@@ -1,5 +1,12 @@
 import { React, useContext, useEffect, useState } from 'react';
-import { Box, Button, Grid, IconButton, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  IconButton,
+  TextField,
+  Typography,
+} from '@mui/material';
 import {
   ThumbUp,
   ThumbDown,
@@ -13,6 +20,8 @@ import SongCard from './SongCard';
 const PlaylistCard = (props) => {
   let { playlist } = props;
   const [selected, setSelected] = useState(false);
+  const [editListNameActive, setEditListNameActive] = useState(false);
+  const [listName, setListName] = useState(playlist.name);
   const { store } = useContext(GlobalStoreContext);
 
   useEffect(() => {
@@ -25,6 +34,26 @@ const PlaylistCard = (props) => {
     if (!selected) store.selectList(playlist);
     else store.selectList(null);
     setSelected(!selected);
+  };
+
+  const toggleEditName = () => {
+    setEditListNameActive(!editListNameActive);
+  };
+
+  const handleToggleEditListName = (event) => {
+    event.stopPropagation();
+    toggleEditName();
+  };
+
+  const handleUpdateListName = (event) => {
+    setListName(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.code === 'Enter') {
+      store.changeListName(playlist, listName);
+      toggleEditName();
+    }
   };
 
   const handleAddSong = () => {
@@ -43,11 +72,33 @@ const PlaylistCard = (props) => {
     store.redo();
   };
 
+  let listNameComponent = '';
+  if (editListNameActive)
+    listNameComponent = (
+      <TextField
+        fullWidth
+        size='small'
+        onBlur={toggleEditName}
+        onKeyPress={handleKeyPress}
+        onChange={handleUpdateListName}
+        value={listName}
+        inputProps={{ style: { fontSize: 24 } }}
+        autoFocus
+      />
+    );
+  else {
+    listNameComponent = (
+      <Typography onDoubleClick={handleToggleEditListName}>
+        {playlist.name}
+      </Typography>
+    );
+  }
+
   return (
     <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2, m: 2 }}>
       <Grid item xs={6}>
         <Box>
-          <Typography>{playlist.name}</Typography>
+          {listNameComponent}
           <Typography>By: {playlist.ownerName}</Typography>
         </Box>
       </Grid>
