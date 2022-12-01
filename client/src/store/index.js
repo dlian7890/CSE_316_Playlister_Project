@@ -284,13 +284,8 @@ const GlobalStoreContextProvider = (props) => {
 
   store.addDeleteSongTransaction = () => {
     let index = store.selectedSongIndex;
-    let song = store.selectedSong;
-    let deletedSong = {
-      title: song.title,
-      artist: song.artist,
-      youTubeId: song.youTubeId,
-    };
-    let transaction = new DeleteSong_Transaction(store, index, deletedSong);
+    let song = store.selectedList.songs[index];
+    let transaction = new DeleteSong_Transaction(store, index, song);
     tps.addTransaction(transaction);
   };
 
