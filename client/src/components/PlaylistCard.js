@@ -33,7 +33,7 @@ const PlaylistCard = (props) => {
   const handleToggleList = () => {
     if (!selected) store.selectList(playlist);
     else store.selectList(null);
-    setSelected(!selected);
+    // setSelected(!selected);
   };
 
   const toggleEditName = () => {
@@ -99,7 +99,7 @@ const PlaylistCard = (props) => {
       <Grid item xs={6}>
         <Box>
           {listNameComponent}
-          <Typography>By: {playlist.ownerName}</Typography>
+          <Typography>By: {playlist.ownerUsername}</Typography>
         </Box>
       </Grid>
       <Grid item xs={6}>

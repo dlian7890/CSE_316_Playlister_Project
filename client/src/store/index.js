@@ -179,12 +179,13 @@ const GlobalStoreContextProvider = (props) => {
 
   store.createNewList = async () => {
     let newListName = 'Untitled';
-    let ownerName = auth.user.firstName + ' ' + auth.user.lastName;
+    let ownerUsername = auth.user.username;
+    console.log(auth.user);
     let ownerEmail = auth.user.email;
     const response = await api.createPlaylist(
       newListName,
       [],
-      ownerName,
+      ownerUsername,
       ownerEmail
     );
     console.log('createNewList response: ' + response);

@@ -7,13 +7,13 @@ const api = axios.create({
 export const createPlaylist = (
   newListName,
   newSongs,
-  ownerName,
+  ownerUsername,
   ownerEmail
 ) => {
   return api.post(`/playlist/`, {
     name: newListName,
     songs: newSongs,
-    ownerName: ownerName,
+    ownerUsername: ownerUsername,
     ownerEmail: ownerEmail,
     isPublished: false,
     publishDate: new Date().toLocaleDateString('en-us', {
