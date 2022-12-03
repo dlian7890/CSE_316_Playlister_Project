@@ -214,6 +214,7 @@ const GlobalStoreContextProvider = (props) => {
   };
 
   store.updateSelectedList = () => {
+    console.log(store.selectedList);
     const asyncUpdateSelectedList = async () => {
       const response = await api.updatePlaylistById(
         store.selectedList._id,
@@ -239,6 +240,18 @@ const GlobalStoreContextProvider = (props) => {
       }
     };
     updateList(playlist);
+  };
+
+  store.publishList = () => {
+    let list = store.selectedList;
+    list.isPublished = true;
+    list.publishDate = new Date().toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+
+    store.updateSelectedList();
   };
 
   store.createSong = (index, song) => {
@@ -354,6 +367,14 @@ const GlobalStoreContextProvider = (props) => {
       type: GlobalStoreActionType.EDIT_SONG,
       payload: { song: song, index: index },
     });
+  };
+
+  store.getYouTubeIds = (songs) => {
+    let youTubeIds = [];
+    for (let i = 0; i < songs.length; i++) {
+      youTubeIds.push(songs[i].youTubeId);
+    }
+    return youTubeIds;
   };
 
   return (

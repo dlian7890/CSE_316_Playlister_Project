@@ -21,6 +21,7 @@ const getLoggedIn = async (req, res) => {
       user: {
         firstName: loggedInUser.firstName,
         lastName: loggedInUser.lastName,
+        username: loggedInUser.username,
         email: loggedInUser.email,
       },
     });

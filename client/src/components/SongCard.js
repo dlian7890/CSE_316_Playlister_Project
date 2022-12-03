@@ -52,6 +52,7 @@ const SongCard = (props) => {
         p: 1,
         display: 'flex',
         justifyContent: 'space-between',
+        borderRadius: '15px',
       }}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
@@ -63,14 +64,14 @@ const SongCard = (props) => {
     >
       <Box>
         {index + 1}.{' '}
-        <Link
+        {/* <Link
           underline='hover'
           id={'song-' + index + '-link'}
           className='song-link'
           href={'https://www.youtube.com/watch?v=' + song.youTubeId}
-        >
-          {song.title} by {song.artist}
-        </Link>
+        > */}
+        {song.title} by {song.artist}
+        {/* </Link> */}
       </Box>
       <IconButton sx={{ color: 'red' }} onClick={handleDeleteSong}>
         <Clear />

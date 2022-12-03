@@ -4,6 +4,8 @@ import {
   Button,
   Grid,
   IconButton,
+  List,
+  ListItem,
   TextField,
   Typography,
 } from '@mui/material';
@@ -16,6 +18,7 @@ import {
 } from '@mui/icons-material';
 import { CurrentModal, GlobalStoreContext } from '../store';
 import SongCard from './SongCard';
+import './PlaylistCard.css';
 
 const PlaylistCard = (props) => {
   let { playlist } = props;
@@ -23,6 +26,10 @@ const PlaylistCard = (props) => {
   const [editListNameActive, setEditListNameActive] = useState(false);
   const [listName, setListName] = useState(playlist.name);
   const { store } = useContext(GlobalStoreContext);
+
+  let className = 'playlist-card';
+  if (selected) className = 'playlist-card selected';
+  else className = 'playlist-card';
 
   useEffect(() => {
     if (store.selectedList === null || store.selectedList._id !== playlist._id)
@@ -72,6 +79,9 @@ const PlaylistCard = (props) => {
     store.redo();
   };
 
+  const handlePublishList = () => {
+    store.publishList();
+  };
   let listNameComponent = '';
   if (editListNameActive)
     listNameComponent = (
@@ -95,7 +105,12 @@ const PlaylistCard = (props) => {
   }
 
   return (
-    <Grid container spacing={2} sx={{ bgcolor: '#ffffff', p: 2, m: 2 }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{ bgcolor: '#ffffff', pt: 1, px: 2, m: 2, borderRadius: '15px' }}
+      className={className}
+    >
       <Grid item xs={6}>
         <Box>
           {listNameComponent}
@@ -103,59 +118,95 @@ const PlaylistCard = (props) => {
         </Box>
       </Grid>
       <Grid item xs={6}>
-        <Box sx={{ display: 'flex', justifyContent: 'right' }}>
-          <Box sx={{ display: 'flex' }}>
-            <ThumbUp /> <Typography>{playlist.likesCount}</Typography>
+        {playlist.isPublished && (
+          <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+            <Box sx={{ mr: 1, display: 'flex' }}>
+              <ThumbUp />
+              <Typography sx={{ ml: '2px' }}>{playlist.likesCount}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex' }}>
+              <ThumbDown />
+              <Typography sx={{ ml: '2px' }}>
+                {playlist.dislikesCount}
+              </Typography>
+            </Box>
           </Box>
-          <Box sx={{ display: 'flex' }}>
-            <ThumbDown />
-            <Typography>{playlist.dislikesCount}</Typography>
-          </Box>
-        </Box>
+        )}
       </Grid>
       {selected && (
         <Grid item xs={12}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              bgcolor: '#f6f6f6',
-              mb: 2,
-              p: 1,
-            }}
-          >
-            <IconButton onClick={handleAddSong}>
-              <Add />
-            </IconButton>
-          </Box>
-          {playlist.songs.map((song, index) => (
-            <SongCard index={index} song={song} />
-          ))}
+          {!playlist.isPublished && (
+            <>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  bgcolor: '#f6f6f6',
+                  mb: 2,
+                  p: 1,
+                  borderRadius: '15px',
+                }}
+              >
+                <IconButton onClick={handleAddSong}>
+                  <Add />
+                </IconButton>
+              </Box>
+              {playlist.songs.map((song, index) => (
+                <SongCard index={index} song={song} />
+              ))}
+            </>
+          )}
+          {playlist.isPublished && (
+            <List
+              sx={{
+                bgcolor: '#f6f6f6',
+                mb: 2,
+                p: 1,
+                borderRadius: '15px',
+              }}
+            >
+              {playlist.songs.map((song, index) => (
+                <ListItem>
+                  {index + 1}. {song.title} by {song.artist}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Grid>
       )}
       {selected && (
         <>
           <Grid item xs={6}>
-            <Button
-              variant='contained'
-              disabled={!store.canUndo()}
-              onClick={handleUndo}
-              sx={{ mr: 2 }}
-            >
-              Undo
-            </Button>
-            <Button
-              variant='contained'
-              disabled={!store.canRedo()}
-              onClick={handleRedo}
-            >
-              Redo
-            </Button>
+            {!playlist.isPublished && (
+              <>
+                <Button
+                  variant='contained'
+                  disabled={!store.canUndo()}
+                  onClick={handleUndo}
+                  sx={{ mr: 2 }}
+                >
+                  Undo
+                </Button>
+                <Button
+                  variant='contained'
+                  disabled={!store.canRedo()}
+                  onClick={handleRedo}
+                >
+                  Redo
+                </Button>
+              </>
+            )}
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'right' }}>
-            <Button variant='contained' sx={{ mr: 2 }}>
-              Publish
-            </Button>
+            {!playlist.isPublished && (
+              <Button
+                variant='contained'
+                sx={{ mr: 2 }}
+                onClick={handlePublishList}
+              >
+                Publish
+              </Button>
+            )}
             <Button
               variant='contained'
               onClick={handleDeletePlaylist}
@@ -169,16 +220,18 @@ const PlaylistCard = (props) => {
           </Grid>
         </>
       )}
-      <Grid item xs={6}>
-        <Typography>Published: {playlist.publishDate}</Typography>
+      <Grid item xs={10}>
+        {playlist.isPublished && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography>Published: {playlist.publishDate}</Typography>
+            <Typography>Listens: {playlist.listensCount}</Typography>
+          </Box>
+        )}
       </Grid>
-      <Grid item xs={6}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography>Likes: {playlist.listensCount}</Typography>
-          <IconButton onClick={handleToggleList}>
-            {selected ? <ExpandLess /> : <ExpandMore />}
-          </IconButton>
-        </Box>
+      <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'right' }}>
+        <IconButton onClick={handleToggleList}>
+          {selected ? <ExpandLess /> : <ExpandMore />}
+        </IconButton>
       </Grid>
     </Grid>
   );

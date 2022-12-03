@@ -1,4 +1,4 @@
-import { React, useContext, useState } from 'react';
+import { React, useContext, useState, useEffect } from 'react';
 import GlobalStoreContext from '../store';
 import { Box, IconButton, Typography } from '@mui/material';
 import {
@@ -14,9 +14,13 @@ const VideoPlayer = () => {
   const { store } = useContext(GlobalStoreContext);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  if (store.selectedPlaylist) {
+    console.log('Hello');
+    playlist = store.getYouTubeIds(store.selectedPlaylist.songs);
+  }
   let player = '';
   let playerStatus = '';
-  let playlist = ['mqmxkGjow1A', '8RbXIMZmVv8', '8UbNbor3OqQ'];
+  let playlist = [];
   let currentSong = 0;
 
   const playerOptions = {
@@ -41,14 +45,14 @@ const VideoPlayer = () => {
   };
 
   const prevSong = () => {
-    currentSong++;
+    currentSong--;
     if (currentSong < 0) currentSong = playlist.length - 1;
   };
 
   const onPlayerReady = (event) => {
+    playlist = store.getYouTubeIds(store.selectedList.songs);
     player = event.target;
     loadAndPlayCurrentSong(event.target);
-    event.target.playVideo();
   };
 
   const onPlayerStateChange = (event) => {
@@ -103,12 +107,14 @@ const VideoPlayer = () => {
   };
   return (
     <>
-      <YouTube
-        videoId={playlist[currentSong]}
-        opts={playerOptions}
-        onReady={onPlayerReady}
-        onStateChange={onPlayerStateChange}
-      />
+      {store.selectedList && (
+        <YouTube
+          videoId={playlist[currentSong]}
+          opts={playerOptions}
+          onReady={onPlayerReady}
+          onStateChange={onPlayerStateChange}
+        />
+      )}
       <Typography>{'Playlist: '}</Typography>
       <Typography>{'Song#: '}</Typography>
       <Typography>{'Title: '}</Typography>
@@ -120,12 +126,12 @@ const VideoPlayer = () => {
         <IconButton onClick={handleStopSong}>
           <Stop />
         </IconButton>
-        {!isPlaying && (
+        {isPlaying && (
           <IconButton onClick={handlePauseSong}>
             <Pause />
           </IconButton>
         )}
-        {isPlaying && (
+        {!isPlaying && (
           <IconButton onClick={handlePlaySong}>
             <PlayArrow />
           </IconButton>
