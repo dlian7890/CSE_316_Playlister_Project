@@ -230,6 +230,11 @@ updatePlaylist = async (req, res) => {
           list.songs = body.playlist.songs;
           list.isPublished = body.playlist.isPublished;
           list.publishDate = body.playlist.publishDate;
+          list.comments = body.playlist.comments;
+          list.listensCount = body.playlist.listensCount;
+          list.likesCount = body.playlist.likesCount;
+          list.dislikesCount = body.playlist.dislikesCount;
+          list.interactedUsers = body.playlist.interactedUsers;
           list
             .save()
             .then(() => {

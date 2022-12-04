@@ -93,7 +93,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: payload,
-          openedList: payload,
+          openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
@@ -378,6 +378,20 @@ const GlobalStoreContextProvider = (props) => {
   store.playSong = (song) => {
     console.log(song);
     storeReducer({ type: GlobalStoreActionType.PLAY_SONG, payload: song });
+  };
+
+  store.addComment = (text) => {
+    let comment = { username: auth.user.username, text: text };
+    let playlist = store.openedList;
+    playlist.comments.push(comment);
+    const updateList = async (playlist) => {
+      let response = await api.updatePlaylistById(playlist._id, playlist);
+      if (response.data.success) {
+        console.log('Comment Added');
+      }
+    };
+    updateList(playlist);
+    store.openList(playlist);
   };
 
   store.undo = () => {

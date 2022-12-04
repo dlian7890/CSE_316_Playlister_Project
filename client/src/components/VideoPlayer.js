@@ -33,9 +33,9 @@ const VideoPlayer = () => {
   const loadAndPlayCurrentSong = () => {
     let song = playlist[currentSong];
     player.loadVideoById(song);
-    // player.playVideo();
+    player.playVideo();
     setIsPlaying(true);
-    store.playSong(store.openedList.songs[currentSong]);
+    // store.playSong(store.openedList.songs[currentSong]);
   };
 
   const nextSong = () => {
@@ -119,13 +119,13 @@ const VideoPlayer = () => {
           <>
             <Typography>Playlist: {store.openedList.name}</Typography>
             <Typography>Song#: {currentSong + 1}</Typography>
-            <Typography>
+            {/* <Typography>
               Title: {store.songPlaying !== null ? store.songPlaying.title : ''}
             </Typography>
             <Typography>
               Artist:{' '}
               {store.songPlaying !== null ? store.songPlaying.artist : ''}
-            </Typography>
+            </Typography> */}
           </>
         )}
       </Box>
