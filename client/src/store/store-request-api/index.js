@@ -30,7 +30,7 @@ export const createPlaylist = (
 };
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`);
 export const getPlaylistsByUser = () => api.get(`/playlists/`);
-export const getPublishedPlaylists = () => api.get(`/playlists/`);
+export const getPublishedPlaylists = () => api.get(`/publishedPlaylists/`);
 export const updatePlaylistById = (id, playlist) => {
   return api.put(`/playlist/${id}`, {
     playlist: playlist,

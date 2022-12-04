@@ -14,10 +14,6 @@ const VideoPlayer = () => {
   const { store } = useContext(GlobalStoreContext);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  if (store.selectedPlaylist) {
-    console.log('Hello');
-    playlist = store.getYouTubeIds(store.selectedPlaylist.songs);
-  }
   let player = '';
   let playerStatus = '';
   let playlist = [];
@@ -50,7 +46,7 @@ const VideoPlayer = () => {
   };
 
   const onPlayerReady = (event) => {
-    playlist = store.getYouTubeIds(store.selectedList.songs);
+    playlist = store.getYouTubeIds(store.openedList.songs);
     player = event.target;
     loadAndPlayCurrentSong(event.target);
   };
@@ -107,7 +103,7 @@ const VideoPlayer = () => {
   };
   return (
     <>
-      {store.selectedList && (
+      {store.openedList && (
         <YouTube
           videoId={playlist[currentSong]}
           opts={playerOptions}

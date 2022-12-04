@@ -16,6 +16,7 @@ const tps = new jsTPS();
 export const GlobalStoreActionType = {
   LOAD_PLAYLISTS: 'LOAD_PLAYLISTS',
   SELECT_LIST: 'SELECT_LIST',
+  OPEN_LIST: 'OPEN_LIST',
   CREATE_NEW_LIST: 'CREATE_NEW_LIST',
   SET_CURRENT_SCREEN: 'SET_CURRENT_SCREEN',
   DELETE_SONG: 'DELETE_SONG',
@@ -30,12 +31,19 @@ export const CurrentModal = {
   DELETE_SONG: 'DELETE_SONG',
 };
 
+export const CurrentScreen = {
+  HOME: 'HOME',
+  ALLPLAYLISTS: 'ALLPLAYLISTS',
+  USERS: 'USERS',
+};
+
 const GlobalStoreContextProvider = (props) => {
   const [store, setStore] = useState({
     currentScreen: '',
     currentModal: CurrentModal.NONE,
     visiblePlaylists: [],
     selectedList: null,
+    openedList: null,
     selectedSongIndex: -1,
     selectedSong: null,
   });
@@ -59,6 +67,18 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: CurrentModal.NONE,
           visiblePlaylists: payload,
           selectedList: store.selectedList,
+          openedList: store.openedList,
+          selectedSongIndex: -1,
+          selectedSong: null,
+        });
+      }
+      case GlobalStoreActionType.OPEN_LIST: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
+          visiblePlaylists: store.visiblePlaylists,
+          selectedList: store.selectedList,
+          openedList: payload,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -69,6 +89,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: payload,
+          openedList: payload,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -79,6 +100,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: payload,
           selectedList: null,
+          openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -87,8 +109,9 @@ const GlobalStoreContextProvider = (props) => {
         return setStore({
           currentScreen: payload,
           currentModal: store.currentModal,
-          visiblePlaylists: store.visiblePlaylists,
+          visiblePlaylists: null,
           selectedList: null,
+          openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -99,6 +122,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: CurrentModal.DELETE_SONG,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
+          openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
         });
@@ -109,6 +133,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: CurrentModal.EDIT_SONG,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
+          openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
         });
@@ -119,6 +144,7 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: payload,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
+          openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
         });
@@ -126,6 +152,18 @@ const GlobalStoreContextProvider = (props) => {
       default:
         return store;
     }
+  };
+
+  store.setScreen = (screen) => {
+    storeReducer({
+      type: GlobalStoreActionType.SET_CURRENT_SCREEN,
+      payload: screen,
+    });
+    // switch (screen) {
+    //   case CurrentScreen.HOME: {
+    //     store.loadPublishedLists();
+    //   }
+    // }
   };
 
   store.loadUsersLists = async () => {
@@ -144,20 +182,22 @@ const GlobalStoreContextProvider = (props) => {
     asyncLoadUsersLists();
   };
 
-  store.loadVisibleLists = async () => {
-    const asyncLoadVisibleLists = async () => {
-      const response = await api.getVisiblePlaylists();
+  store.loadPublishedLists = async () => {
+    const asyncLoadPublishedLists = async () => {
+      const response = await api.getPublishedPlaylists();
       if (response.data.success) {
-        let visiblePlaylists = response.data.visiblePlaylists;
+        let visiblePlaylists = response.data.playlists;
+        console.log(visiblePlaylists);
         storeReducer({
-          type: GlobalStoreActionType.LOAD_LISTS,
+          type: GlobalStoreActionType.LOAD_PLAYLISTS,
           payload: visiblePlaylists,
         });
       } else {
-        console.log('API FAILED TO GET THE LIST PAIRS');
+        console.log('API FAILED TO GET PUBLISHED LISTS');
       }
     };
-    asyncLoadVisibleLists();
+    asyncLoadPublishedLists();
+    console.log(store.visiblePlaylists);
   };
 
   store.setModal = (modalType) => {
@@ -203,6 +243,13 @@ const GlobalStoreContextProvider = (props) => {
       store.loadUsersLists();
     }
     processDelete(id);
+  };
+
+  store.openList = (playlist) => {
+    storeReducer({
+      type: GlobalStoreActionType.OPEN_LIST,
+      payload: playlist,
+    });
   };
 
   store.selectList = (playlist) => {

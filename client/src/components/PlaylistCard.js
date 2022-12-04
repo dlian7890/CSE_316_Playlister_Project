@@ -28,7 +28,8 @@ const PlaylistCard = (props) => {
   const { store } = useContext(GlobalStoreContext);
 
   let className = 'playlist-card';
-  if (selected) className = 'playlist-card selected';
+  if (store.openedList !== null && store.openedList._id === playlist._id)
+    className = 'playlist-card selected';
   else className = 'playlist-card';
 
   useEffect(() => {
@@ -37,7 +38,12 @@ const PlaylistCard = (props) => {
     else if (store.selectedList._id === playlist._id) setSelected(true);
   }, [store.selectedList]);
 
-  const handleToggleList = () => {
+  const handleOpenList = () => {
+    store.openList(playlist);
+  };
+
+  const handleToggleList = (event) => {
+    event.stopPropagation();
     if (!selected) store.selectList(playlist);
     else store.selectList(null);
     // setSelected(!selected);
@@ -110,6 +116,7 @@ const PlaylistCard = (props) => {
       spacing={2}
       sx={{ bgcolor: '#ffffff', pt: 1, px: 2, m: 2, borderRadius: '15px' }}
       className={className}
+      onClick={handleOpenList}
     >
       <Grid item xs={6}>
         <Box>

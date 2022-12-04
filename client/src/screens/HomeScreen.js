@@ -23,7 +23,7 @@ const HomeScreen = () => {
   }, []);
 
   let playlistCards = '';
-  if (store) {
+  if (store.visiblePlaylists !== null) {
     playlistCards = (
       <Box sx={{ m: 2 }}>
         {store.visiblePlaylists.map((playlist) => (
