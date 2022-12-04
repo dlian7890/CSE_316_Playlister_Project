@@ -1,6 +1,7 @@
 import { React, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlobalStoreContext, CurrentScreen } from '../store';
+import AuthContext from '../auth';
 import {
   AppBar,
   Box,
@@ -16,12 +17,13 @@ import { Sort, Home, Group, Person } from '@mui/icons-material';
 
 const ToolBar = () => {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
   const handleGoHome = () => {
-    navigate('/');
+    navigate('/home');
     store.setScreen(CurrentScreen.HOME);
   };
 
@@ -49,7 +51,7 @@ const ToolBar = () => {
       <Toolbar>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={2} sx={{ fontSize: '35px' }}>
-            <IconButton onClick={handleGoHome}>
+            <IconButton disabled={auth.user === null} onClick={handleGoHome}>
               <Home />
             </IconButton>
             <IconButton onClick={handleGoAllPlaylists}>

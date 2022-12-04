@@ -14,7 +14,7 @@ const SplashScreen = () => {
     navigate('/login');
   };
   const handleGuest = () => {
-    navigate('/home');
+    navigate('/all-lists');
   };
 
   useEffect(() => {

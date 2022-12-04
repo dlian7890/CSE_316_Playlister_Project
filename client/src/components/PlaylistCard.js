@@ -17,6 +17,7 @@ import {
   Add,
 } from '@mui/icons-material';
 import { CurrentModal, GlobalStoreContext } from '../store';
+import AuthContext from '../auth';
 import SongCard from './SongCard';
 import './PlaylistCard.css';
 
@@ -26,6 +27,7 @@ const PlaylistCard = (props) => {
   const [editListNameActive, setEditListNameActive] = useState(false);
   const [listName, setListName] = useState(playlist.name);
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
 
   let className = 'playlist-card';
   if (store.openedList !== null && store.openedList._id === playlist._id)
@@ -181,7 +183,7 @@ const PlaylistCard = (props) => {
           )}
         </Grid>
       )}
-      {selected && (
+      {selected && auth.user !== null && (
         <>
           <Grid item xs={6}>
             {!playlist.isPublished && (
@@ -214,13 +216,16 @@ const PlaylistCard = (props) => {
                 Publish
               </Button>
             )}
-            <Button
-              variant='contained'
-              onClick={handleDeletePlaylist}
-              sx={{ mr: 2 }}
-            >
-              Delete
-            </Button>
+
+            {playlist.ownerUsername === auth.user.username && (
+              <Button
+                variant='contained'
+                onClick={handleDeletePlaylist}
+                sx={{ mr: 2 }}
+              >
+                Delete
+              </Button>
+            )}
             <Button variant='contained' sx={{ mr: 2 }}>
               Duplicate
             </Button>
