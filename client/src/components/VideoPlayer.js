@@ -19,6 +19,8 @@ const VideoPlayer = () => {
   let playlist = [];
   let currentSong = 0;
 
+  console.log(store.songPlaying);
+
   const playerOptions = {
     height: '390',
     width: '640',
@@ -31,8 +33,9 @@ const VideoPlayer = () => {
   const loadAndPlayCurrentSong = () => {
     let song = playlist[currentSong];
     player.loadVideoById(song);
-    player.playVideo();
+    // player.playVideo();
     setIsPlaying(true);
+    store.playSong(store.openedList.songs[currentSong]);
   };
 
   const nextSong = () => {
@@ -111,10 +114,22 @@ const VideoPlayer = () => {
           onStateChange={onPlayerStateChange}
         />
       )}
-      <Typography>{'Playlist: '}</Typography>
-      <Typography>{'Song#: '}</Typography>
-      <Typography>{'Title: '}</Typography>
-      <Typography>{'Artist: '}</Typography>
+      <Box>
+        {store.openedList && (
+          <>
+            <Typography>Playlist: {store.openedList.name}</Typography>
+            <Typography>Song#: {currentSong + 1}</Typography>
+            <Typography>
+              Title: {store.songPlaying !== null ? store.songPlaying.title : ''}
+            </Typography>
+            <Typography>
+              Artist:{' '}
+              {store.songPlaying !== null ? store.songPlaying.artist : ''}
+            </Typography>
+          </>
+        )}
+      </Box>
+
       <Box>
         <IconButton onClick={handlePrevSong}>
           <SkipPrevious />

@@ -22,6 +22,7 @@ export const GlobalStoreActionType = {
   DELETE_SONG: 'DELETE_SONG',
   EDIT_SONG: 'EDIT_SONG',
   SET_MODAL: 'SET_MODAL',
+  PLAY_SONG: 'PLAY_SONG',
 };
 
 export const CurrentModal = {
@@ -46,6 +47,7 @@ const GlobalStoreContextProvider = (props) => {
     openedList: null,
     selectedSongIndex: -1,
     selectedSong: null,
+    songPlaying: null,
   });
   const navigate = useNavigate();
 
@@ -70,6 +72,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.OPEN_LIST: {
@@ -81,6 +84,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: payload,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -92,6 +96,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: payload,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -103,6 +108,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -114,6 +120,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -125,6 +132,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.EDIT_SONG: {
@@ -136,6 +144,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
+          songPlaying: store.songPlaying,
         });
       }
       case GlobalStoreActionType.SET_MODAL: {
@@ -147,6 +156,19 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
+          songPlaying: store.songPlaying,
+        });
+      }
+      case GlobalStoreActionType.PLAY_SONG: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: payload,
+          visiblePlaylists: store.visiblePlaylists,
+          selectedList: store.selectedList,
+          openedList: store.openedList,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
+          songPlaying: payload,
         });
       }
       default:
@@ -351,6 +373,11 @@ const GlobalStoreContextProvider = (props) => {
     }
 
     store.updateSelectedList();
+  };
+
+  store.playSong = (song) => {
+    console.log(song);
+    storeReducer({ type: GlobalStoreActionType.PLAY_SONG, payload: song });
   };
 
   store.undo = () => {
