@@ -23,6 +23,7 @@ export const GlobalStoreActionType = {
   EDIT_SONG: 'EDIT_SONG',
   SET_MODAL: 'SET_MODAL',
   PLAY_SONG: 'PLAY_SONG',
+  SET_ERROR_MESSAGE: 'SET_ERROR_MESSAGE',
 };
 
 export const CurrentModal = {
@@ -30,6 +31,7 @@ export const CurrentModal = {
   DELETE_LIST: 'DELETE_LIST',
   EDIT_SONG: 'EDIT_SONG',
   DELETE_SONG: 'DELETE_SONG',
+  ERROR: 'ERROR',
 };
 
 export const CurrentScreen = {
@@ -48,6 +50,7 @@ const GlobalStoreContextProvider = (props) => {
     selectedSongIndex: -1,
     selectedSong: null,
     songPlaying: null,
+    errorMessage: '',
   });
   const navigate = useNavigate();
 
@@ -73,6 +76,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.OPEN_LIST: {
@@ -85,6 +89,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -97,6 +102,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -109,6 +115,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -121,6 +128,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: null,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -133,6 +141,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.EDIT_SONG: {
@@ -145,6 +154,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.SET_MODAL: {
@@ -157,6 +167,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlaying: store.songPlaying,
+          errorMessage: '',
         });
       }
       case GlobalStoreActionType.PLAY_SONG: {
@@ -169,6 +180,20 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: store.selectedSongIndex,
           selectedSong: store.selectedSong,
           songPlaying: payload,
+          errorMessage: '',
+        });
+      }
+      case GlobalStoreActionType.SET_ERROR_MESSAGE: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: CurrentModal.ERROR,
+          visiblePlaylists: store.visiblePlaylists,
+          selectedList: store.selectedList,
+          openedList: store.openedList,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
+          songPlaying: store.songPlaying,
+          errorMessage: payload,
         });
       }
       default:
@@ -241,6 +266,16 @@ const GlobalStoreContextProvider = (props) => {
   };
   store.isEditSongModalOpen = () => {
     return store.currentModal === CurrentModal.EDIT_SONG;
+  };
+  store.isErrorModalOpen = () => {
+    return store.currentModal === CurrentModal.ERROR;
+  };
+
+  store.setErrorMessage = (errorMessage) => {
+    storeReducer({
+      type: GlobalStoreActionType.SET_ERROR_MESSAGE,
+      payload: errorMessage,
+    });
   };
 
   store.createNewList = async () => {

@@ -12,6 +12,7 @@ import UsersListScreen from './screens/UsersListScreen';
 import DeleteListModal from './components/Modals/DeleteListModal';
 import DeleteSongModal from './components/Modals/DeleteSongModal';
 import EditSongModal from './components/Modals/EditSongModal';
+import ErrorModal from './components/Modals/ErrorModal';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <DeleteListModal />
           <DeleteSongModal />
           <EditSongModal />
+          <ErrorModal />
         </GlobalStoreContextProvider>
       </AuthContextProvider>
     </Router>
