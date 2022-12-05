@@ -196,6 +196,7 @@ getPlaylists = async (req, res) => {
     return res.status(200).json({ success: true, data: playlists });
   }).catch((err) => console.log(err));
 };
+
 updatePlaylist = async (req, res) => {
   const body = req.body;
   console.log('updatePlaylist: ' + JSON.stringify(body));
@@ -222,42 +223,35 @@ updatePlaylist = async (req, res) => {
       await User.findOne({ email: list.ownerEmail }, (err, user) => {
         console.log('user._id: ' + user._id);
         console.log('req.userId: ' + req.userId);
-        if (user._id == req.userId) {
-          console.log('correct user!');
-          console.log('req.body.name: ' + req.body.name);
+        console.log('correct user!');
+        console.log('req.body.name: ' + req.body.name);
 
-          list.name = body.playlist.name;
-          list.songs = body.playlist.songs;
-          list.isPublished = body.playlist.isPublished;
-          list.publishDate = body.playlist.publishDate;
-          list.comments = body.playlist.comments;
-          list.listensCount = body.playlist.listensCount;
-          list.likesCount = body.playlist.likesCount;
-          list.dislikesCount = body.playlist.dislikesCount;
-          list.interactedUsers = body.playlist.interactedUsers;
-          list
-            .save()
-            .then(() => {
-              console.log('SUCCESS!!!');
-              return res.status(200).json({
-                success: true,
-                id: list._id,
-                message: 'Playlist updated!',
-              });
-            })
-            .catch((error) => {
-              console.log('FAILURE: ' + JSON.stringify(error));
-              return res.status(404).json({
-                error,
-                message: 'Playlist not updated!',
-              });
+        list.name = body.playlist.name;
+        list.songs = body.playlist.songs;
+        list.isPublished = body.playlist.isPublished;
+        list.publishDate = body.playlist.publishDate;
+        list.comments = body.playlist.comments;
+        list.listensCount = body.playlist.listensCount;
+        list.likesCount = body.playlist.likesCount;
+        list.dislikesCount = body.playlist.dislikesCount;
+        list.interactedUsers = body.playlist.interactedUsers;
+        list
+          .save()
+          .then(() => {
+            console.log('SUCCESS!!!');
+            return res.status(200).json({
+              success: true,
+              id: list._id,
+              message: 'Playlist updated!',
             });
-        } else {
-          console.log('incorrect user!');
-          return res
-            .status(400)
-            .json({ success: false, description: 'authentication error' });
-        }
+          })
+          .catch((error) => {
+            console.log('FAILURE: ' + JSON.stringify(error));
+            return res.status(404).json({
+              error,
+              message: 'Playlist not updated!',
+            });
+          });
       }).catch((err) => console.log(err));
     }
     asyncFindUser(playlist);

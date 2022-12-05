@@ -22,7 +22,10 @@ const playlistSchema = new Schema(
     likesCount: { type: Number, required: true },
     dislikesCount: { type: Number, required: true },
     comments: { type: [{ username: String, text: String }], required: true },
-    interactedUsers: { type: [], required: true },
+    interactedUsers: {
+      type: [{ username: String, liked: Boolean }],
+      required: true,
+    },
   },
   { timestamps: true }
 );

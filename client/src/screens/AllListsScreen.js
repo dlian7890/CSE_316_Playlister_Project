@@ -5,6 +5,7 @@ import { Add } from '@mui/icons-material';
 import ToolBar from '../components/ToolBar';
 import PlaylistCard from '../components/PlaylistCard';
 import VideoPlayer from '../components/VideoPlayer';
+import Comments from '../components/Comments';
 
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
@@ -15,7 +16,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    store.loadPublishedLists();
+    store.setScreen('ALLPLAYLISTS');
   }, []);
 
   let playlistCards = '';
@@ -45,6 +46,7 @@ const HomeScreen = () => {
               <Tab label='Comments' />
             </Tabs>
             <Box sx={{ p: 2 }}>{currentTab === 0 && <VideoPlayer />}</Box>
+            <Box sx={{ p: 2 }}>{currentTab === 1 && <Comments />}</Box>
           </Grid>
         </Grid>
       </Box>

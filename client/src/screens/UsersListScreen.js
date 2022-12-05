@@ -15,7 +15,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    store.loadPublishedLists();
+    store.setScreen('USERS');
   }, []);
 
   let playlistCards = '';

@@ -19,8 +19,6 @@ const VideoPlayer = () => {
   let playlist = [];
   let currentSong = 0;
 
-  console.log(store.songPlaying);
-
   const playerOptions = {
     height: '390',
     width: '640',

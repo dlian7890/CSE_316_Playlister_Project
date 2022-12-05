@@ -24,17 +24,17 @@ const ToolBar = () => {
 
   const handleGoHome = () => {
     navigate('/home');
-    store.setScreen(CurrentScreen.HOME);
+    // store.setScreen(CurrentScreen.HOME);
   };
 
   const handleGoAllPlaylists = () => {
     navigate('/all-lists');
-    store.setScreen(CurrentScreen.ALLPLAYLISTS);
+    // store.setScreen(CurrentScreen.ALLPLAYLISTS);
   };
 
   const handleGoUsers = () => {
     navigate('/users-lists');
-    store.setScreen(CurrentScreen.USERS);
+    // store.setScreen(CurrentScreen.USERS);
   };
 
   const handleSortMenuOpen = (event) => {

@@ -20,7 +20,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    store.loadUsersLists();
+    store.setScreen('HOME');
   }, []);
 
   let playlistCards = '';
@@ -58,7 +58,6 @@ const HomeScreen = () => {
             </Tabs>
             <Box sx={{ p: 2 }}>{currentTab === 0 && <VideoPlayer />}</Box>
             <Box sx={{ p: 2 }}>{currentTab === 1 && <Comments />}</Box>
-            
           </Grid>
         </Grid>
       </Box>

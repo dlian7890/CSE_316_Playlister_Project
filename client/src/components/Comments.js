@@ -7,7 +7,9 @@ const Comments = () => {
   const [comment, setComment] = useState('');
 
   let comments = '';
+  let commentsVisible = false;
   if (store.openedList !== null) {
+    commentsVisible = store.openedList.isPublished;
     comments = (
       <Box>
         {store.openedList.comments.map((comment) => (
@@ -34,18 +36,22 @@ const Comments = () => {
 
   return (
     <Box>
-      {comments}
-      <Box>
-        <TextField
-          fullWidth
-          multiline
-          size='small'
-          sx={{ bgcolor: 'white' }}
-          onKeyPress={handleKeyPress}
-          onChange={handleUpdateComment}
-          value={comment}
-        ></TextField>
-      </Box>
+      {commentsVisible && (
+        <>
+          {comments}
+          <Box>
+            <TextField
+              fullWidth
+              multiline
+              size='small'
+              sx={{ bgcolor: 'white' }}
+              onKeyPress={handleKeyPress}
+              onChange={handleUpdateComment}
+              value={comment}
+            ></TextField>
+          </Box>
+        </>
+      )}
     </Box>
   );
 };

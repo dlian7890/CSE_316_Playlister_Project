@@ -40,6 +40,30 @@ const PlaylistCard = (props) => {
     else if (store.selectedList._id === playlist._id) setSelected(true);
   }, [store.selectedList]);
 
+  const isLiked = () => {
+    if (auth.user) {
+      let interactedUsers = playlist.interactedUsers.filter((interaction) => {
+        return interaction.username === auth.user.username;
+      });
+      if (interactedUsers.length === 0) return false;
+      else {
+        return interactedUsers[0].liked;
+      }
+    }
+  };
+
+  const isDisliked = () => {
+    if (auth.user) {
+      let interactedUsers = playlist.interactedUsers.filter((interaction) => {
+        return interaction.username === auth.user.username;
+      });
+      if (interactedUsers.length === 0) return false;
+      else {
+        return !interactedUsers[0].liked;
+      }
+    }
+  };
+
   const handleOpenList = () => {
     store.openList(playlist);
   };
@@ -57,7 +81,7 @@ const PlaylistCard = (props) => {
 
   const handleToggleEditListName = (event) => {
     event.stopPropagation();
-    toggleEditName();
+    if (!playlist.isPublished) toggleEditName();
   };
 
   const handleUpdateListName = (event) => {
@@ -71,25 +95,46 @@ const PlaylistCard = (props) => {
     }
   };
 
-  const handleAddSong = () => {
+  const handleAddSong = (event) => {
+    event.stopPropagation();
     store.addNewSong();
   };
 
-  const handleDeletePlaylist = () => {
+  const handleDeletePlaylist = (event) => {
+    event.stopPropagation();
     store.setModal(CurrentModal.DELETE_LIST);
   };
 
-  const handleUndo = () => {
+  const handleUndo = (event) => {
+    event.stopPropagation();
     store.undo();
   };
 
-  const handleRedo = () => {
+  const handleRedo = (event) => {
+    event.stopPropagation();
     store.redo();
   };
 
-  const handlePublishList = () => {
+  const handlePublishList = (event) => {
+    event.stopPropagation();
     store.publishList();
   };
+
+  const handleDuplicateList = (event) => {
+    event.stopPropagation();
+    store.duplicateList(playlist);
+  };
+
+  const handleLike = (event) => {
+    event.stopPropagation();
+    store.likeOrDislikePlaylist(true, playlist);
+  };
+
+  const handleDislike = (event) => {
+    event.stopPropagation();
+    store.likeOrDislikePlaylist(false, playlist);
+  };
+
   let listNameComponent = '';
   if (editListNameActive)
     listNameComponent = (
@@ -130,11 +175,28 @@ const PlaylistCard = (props) => {
         {playlist.isPublished && (
           <Box sx={{ display: 'flex', justifyContent: 'right' }}>
             <Box sx={{ mr: 1, display: 'flex' }}>
-              <ThumbUp />
+              <IconButton
+                sx={{ mt: -1 }}
+                className={isLiked() ? 'like-icon selected' : 'like-icon'}
+                disabled={auth.user === null}
+                onClick={handleLike}
+              >
+                <ThumbUp />
+              </IconButton>
               <Typography sx={{ ml: '2px' }}>{playlist.likesCount}</Typography>
             </Box>
             <Box sx={{ display: 'flex' }}>
-              <ThumbDown />
+              <IconButton
+                sx={{ mt: -1 }}
+                disabled={auth.user === null}
+                onClick={handleDislike}
+              >
+                <ThumbDown
+                  className={
+                    isDisliked() ? 'dislike-icon selected' : 'dislike-icon'
+                  }
+                />
+              </IconButton>
               <Typography sx={{ ml: '2px' }}>
                 {playlist.dislikesCount}
               </Typography>
@@ -216,17 +278,18 @@ const PlaylistCard = (props) => {
                 Publish
               </Button>
             )}
-
-            {playlist.ownerUsername === auth.user.username && (
-              <Button
-                variant='contained'
-                onClick={handleDeletePlaylist}
-                sx={{ mr: 2 }}
-              >
-                Delete
-              </Button>
-            )}
-            <Button variant='contained' sx={{ mr: 2 }}>
+            <Button
+              variant='contained'
+              onClick={handleDeletePlaylist}
+              sx={{ mr: 2 }}
+            >
+              Delete
+            </Button>
+            <Button
+              variant='contained'
+              sx={{ mr: 2 }}
+              onClick={handleDuplicateList}
+            >
               Duplicate
             </Button>
           </Grid>

@@ -113,14 +113,14 @@ const GlobalStoreContextProvider = (props) => {
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
         return setStore({
-          currentScreen: payload,
+          currentScreen: payload.screen,
           currentModal: store.currentModal,
-          visiblePlaylists: null,
+          visiblePlaylists: payload.playlists,
           selectedList: null,
-          openedList: store.openedList,
+          openedList: null,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlaying: null,
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -176,51 +176,55 @@ const GlobalStoreContextProvider = (props) => {
     }
   };
 
-  store.setScreen = (screen) => {
-    storeReducer({
-      type: GlobalStoreActionType.SET_CURRENT_SCREEN,
-      payload: screen,
-    });
-    // switch (screen) {
-    //   case CurrentScreen.HOME: {
-    //     store.loadPublishedLists();
-    //   }
-    // }
+  store.setScreen = async (screen) => {
+    let response = null;
+    if (screen === 'HOME') response = await api.getPlaylistsByUser();
+    else response = await api.getPublishedPlaylists();
+
+    if (response.data.success) {
+      let playlists = response.data.playlists;
+      storeReducer({
+        type: GlobalStoreActionType.SET_CURRENT_SCREEN,
+        payload: { screen: screen, playlists: playlists },
+      });
+    } else {
+      console.log('API FAILED TO GET THE USERS LISTS');
+    }
   };
 
-  store.loadUsersLists = async () => {
-    const asyncLoadUsersLists = async () => {
-      const response = await api.getPlaylistsByUser();
-      if (response.data.success) {
-        let visiblePlaylists = response.data.playlists;
-        storeReducer({
-          type: GlobalStoreActionType.LOAD_PLAYLISTS,
-          payload: visiblePlaylists,
-        });
-      } else {
-        console.log('API FAILED TO GET THE USERS LISTS');
-      }
-    };
-    asyncLoadUsersLists();
+  store.loadLists = async () => {
+    let response = null;
+    if (store.currentScreen === 'HOME')
+      response = await api.getPlaylistsByUser();
+    else response = await api.getPublishedPlaylists();
+
+    if (response.data.success) {
+      let playlists = response.data.playlists;
+      storeReducer({
+        type: GlobalStoreActionType.LOAD_PLAYLISTS,
+        payload: playlists,
+      });
+    } else {
+      console.log('API FAILED TO GET THE USERS LISTS');
+    }
   };
 
-  store.loadPublishedLists = async () => {
-    const asyncLoadPublishedLists = async () => {
-      const response = await api.getPublishedPlaylists();
-      if (response.data.success) {
-        let visiblePlaylists = response.data.playlists;
-        console.log(visiblePlaylists);
-        storeReducer({
-          type: GlobalStoreActionType.LOAD_PLAYLISTS,
-          payload: visiblePlaylists,
-        });
-      } else {
-        console.log('API FAILED TO GET PUBLISHED LISTS');
-      }
-    };
-    asyncLoadPublishedLists();
-    console.log(store.visiblePlaylists);
-  };
+  // store.loadPublishedLists = async () => {
+  //   const asyncLoadPublishedLists = async () => {
+  //     const response = await api.getPublishedPlaylists();
+  //     if (response.data.success) {
+  //       let visiblePlaylists = response.data.playlists;
+  //       console.log(visiblePlaylists);
+  //       storeReducer({
+  //         type: GlobalStoreActionType.LOAD_PLAYLISTS,
+  //         payload: visiblePlaylists,
+  //       });
+  //     } else {
+  //       console.log('API FAILED TO GET PUBLISHED LISTS');
+  //     }
+  //   };
+  //   asyncLoadPublishedLists();
+  // };
 
   store.setModal = (modalType) => {
     storeReducer({
@@ -242,7 +246,6 @@ const GlobalStoreContextProvider = (props) => {
   store.createNewList = async () => {
     let newListName = 'Untitled';
     let ownerUsername = auth.user.username;
-    console.log(auth.user);
     let ownerEmail = auth.user.email;
     const response = await api.createPlaylist(
       newListName,
@@ -253,7 +256,7 @@ const GlobalStoreContextProvider = (props) => {
     console.log('createNewList response: ' + response);
     if (response.status === 201) {
       let newList = response.data.playlist;
-      store.loadUsersLists();
+      store.loadLists();
     } else {
       console.log('API FAILED TO CREATE A NEW LIST');
     }
@@ -262,9 +265,29 @@ const GlobalStoreContextProvider = (props) => {
   store.deleteList = (id) => {
     async function processDelete(id) {
       let response = await api.deletePlaylistById(id);
-      store.loadUsersLists();
+      store.loadLists();
     }
     processDelete(id);
+  };
+
+  store.duplicateList = async (playlist) => {
+    let newListName = 'Copy of ' + playlist.name;
+    let ownerUsername = auth.user.username;
+    let ownerEmail = auth.user.email;
+    let songs = playlist.songs;
+    const response = await api.createPlaylist(
+      newListName,
+      songs,
+      ownerUsername,
+      ownerEmail
+    );
+    console.log('createNewList response: ' + response);
+    if (response.status === 201) {
+      let newList = response.data.playlist;
+      store.loadLists();
+    } else {
+      console.log('API FAILED TO CREATE A NEW LIST');
+    }
   };
 
   store.openList = (playlist) => {
@@ -290,7 +313,7 @@ const GlobalStoreContextProvider = (props) => {
         store.selectedList
       );
       if (response.data.success) {
-        store.loadUsersLists();
+        store.loadLists();
       }
     };
     asyncUpdateSelectedList();
@@ -305,7 +328,7 @@ const GlobalStoreContextProvider = (props) => {
         updatedPlaylist
       );
       if (response.data.success) {
-        store.loadUsersLists();
+        store.loadLists();
       }
     };
     updateList(playlist);
@@ -392,6 +415,66 @@ const GlobalStoreContextProvider = (props) => {
     };
     updateList(playlist);
     store.openList(playlist);
+  };
+
+  store.likeOrDislikePlaylist = (like, playlist) => {
+    let updatedPlaylist = playlist;
+    let interactedUsers = playlist.interactedUsers.filter((interaction) => {
+      return interaction.username === auth.user.username;
+    });
+    console.log(interactedUsers);
+
+    if (interactedUsers.length === 0) {
+      if (like) {
+        let interaction = { username: auth.user.username, liked: true };
+        playlist.interactedUsers.push(interaction);
+        playlist.likesCount++;
+      } else {
+        let interaction = { username: auth.user.username, liked: false };
+        playlist.interactedUsers.push(interaction);
+        playlist.dislikesCount++;
+      }
+    } else if (interactedUsers.length === 1) {
+      let interaction = interactedUsers[0];
+      if (interaction.liked) {
+        playlist.likesCount--;
+        playlist.interactedUsers = playlist.interactedUsers.filter(
+          (interaction) => {
+            return interaction.username !== auth.user.username;
+          }
+        );
+        if (!like) {
+          playlist.dislikesCount++;
+          let interaction = { username: auth.user.username, liked: false };
+          playlist.interactedUsers.push(interaction);
+        }
+      } else {
+        playlist.dislikesCount--;
+        playlist.interactedUsers = playlist.interactedUsers.filter(
+          (interaction) => {
+            return interaction.username !== auth.user.username;
+          }
+        );
+        if (like) {
+          playlist.likesCount++;
+          let interaction = { username: auth.user.username, liked: true };
+          playlist.interactedUsers.push(interaction);
+        }
+      }
+    }
+    // liked like-> remove dislike->remove and add
+    // disliked like -> remove and add dislike -> remove
+
+    const updateList = async (playlist) => {
+      let response = await api.updatePlaylistById(
+        playlist._id,
+        updatedPlaylist
+      );
+      if (response.data.success) {
+        store.loadLists();
+      }
+    };
+    updateList(playlist);
   };
 
   store.undo = () => {
