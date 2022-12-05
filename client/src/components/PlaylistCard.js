@@ -285,13 +285,16 @@ const PlaylistCard = (props) => {
                 Publish
               </Button>
             )}
-            <Button
-              variant='contained'
-              onClick={handleDeletePlaylist}
-              sx={{ mr: 2 }}
-            >
-              Delete
-            </Button>
+
+            {store.selectedList === 'HOME' && (
+              <Button
+                variant='contained'
+                onClick={handleDeletePlaylist}
+                sx={{ mr: 2 }}
+              >
+                Delete
+              </Button>
+            )}
             <Button
               variant='contained'
               sx={{ mr: 2 }}

@@ -19,6 +19,7 @@ const ToolBar = () => {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [searchText, setSearchText] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
@@ -35,6 +36,16 @@ const ToolBar = () => {
   const handleGoUsers = () => {
     navigate('/users-lists');
     // store.setScreen(CurrentScreen.USERS);
+  };
+
+  const handleUpdateSearchText = (event) => {
+    setSearchText(event.target.value);
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.code === 'Enter') {
+      store.search(searchText);
+    }
   };
 
   const handleSortMenuOpen = (event) => {
@@ -65,9 +76,11 @@ const ToolBar = () => {
             <TextField
               fullWidth
               id='outlined-basic'
-              label='Search'
               variant='outlined'
               size='small'
+              value={searchText}
+              onChange={handleUpdateSearchText}
+              onKeyPress={handleKeyPress}
               sx={{ bgcolor: '#ffffff' }}
             />
           </Grid>

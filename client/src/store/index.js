@@ -47,7 +47,7 @@ const GlobalStoreContextProvider = (props) => {
     openedList: null,
     selectedSongIndex: -1,
     selectedSong: null,
-    songPlaying: null,
+    songPlayingIndex: null,
   });
   const navigate = useNavigate();
 
@@ -72,7 +72,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.OPEN_LIST: {
@@ -84,7 +84,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: payload,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: 0,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -96,7 +96,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -108,7 +108,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -120,7 +120,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: null,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: null,
+          songPlayingIndex: null,
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -132,7 +132,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.EDIT_SONG: {
@@ -144,7 +144,7 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.SET_MODAL: {
@@ -156,19 +156,19 @@ const GlobalStoreContextProvider = (props) => {
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlaying: store.songPlaying,
+          songPlayingIndex: store.songPlayingIndex,
         });
       }
       case GlobalStoreActionType.PLAY_SONG: {
         return setStore({
           currentScreen: store.currentScreen,
-          currentModal: payload,
+          currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
           openedList: store.openedList,
           selectedSongIndex: store.selectedSongIndex,
           selectedSong: store.selectedSong,
-          songPlaying: payload,
+          songPlayingIndex: payload,
         });
       }
       default:
@@ -421,9 +421,8 @@ const GlobalStoreContextProvider = (props) => {
     store.updateSelectedList();
   };
 
-  store.playSong = (song) => {
-    console.log(song);
-    storeReducer({ type: GlobalStoreActionType.PLAY_SONG, payload: song });
+  store.playSong = (index) => {
+    storeReducer({ type: GlobalStoreActionType.PLAY_SONG, payload: index });
   };
 
   store.addComment = (text) => {
@@ -498,6 +497,30 @@ const GlobalStoreContextProvider = (props) => {
       }
     };
     updateList(playlist);
+  };
+
+  store.search = async (searchText) => {
+    let response = null;
+    let filteredPlaylists = '';
+    if (searchText === '') filteredPlaylists = [];
+    else {
+      if (store.currentScreen === 'HOME')
+        response = await api.getPlaylistsByUser();
+      else response = await api.getPublishedPlaylists();
+      if (store.currentScreen === 'USERS') {
+        filteredPlaylists = response.data.playlists.filter((playlist) => {
+          return playlist.ownerUsername.includes(searchText);
+        });
+      } else {
+        filteredPlaylists = response.data.playlists.filter((playlist) => {
+          return playlist.name.includes(searchText);
+        });
+      }
+    }
+    storeReducer({
+      type: GlobalStoreActionType.LOAD_PLAYLISTS,
+      payload: filteredPlaylists,
+    });
   };
 
   store.undo = () => {

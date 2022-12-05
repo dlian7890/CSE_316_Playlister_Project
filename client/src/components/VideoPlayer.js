@@ -13,11 +13,20 @@ import YouTube from 'react-youtube';
 const VideoPlayer = () => {
   const { store } = useContext(GlobalStoreContext);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   let player = '';
   let playerStatus = '';
-  let playlist = [];
-  let currentSong = 0;
+  let id = '';
+  // if (store.songPlayingIndex !== -1 && store.openedList !== null) {
+  //   id = store.openedList.songs[store.songPlayingIndex].youTubeId;
+  //   player.loadVideoById(id);
+  // }
+
+  useEffect(() => {
+    console.log('Hello');
+    if (player !== '') player.loadVideoById(id);
+  }, [store.openedList]);
 
   const playerOptions = {
     height: '390',
@@ -29,27 +38,26 @@ const VideoPlayer = () => {
   };
 
   const loadAndPlayCurrentSong = () => {
-    let song = playlist[currentSong];
-    player.loadVideoById(song);
-    player.playVideo();
+    id = store.openedList.songs[store.songPlayingIndex].youTubeId;
+    player.loadVideoById(id);
     setIsPlaying(true);
-    // store.playSong(store.openedList.songs[currentSong]);
   };
 
   const nextSong = () => {
-    currentSong++;
-    currentSong = currentSong % playlist.length;
+    let index = store.songPlayingIndex + 1;
+    index = index % store.openedList.songs.length;
+    store.playSong(index);
   };
 
   const prevSong = () => {
-    currentSong--;
-    if (currentSong < 0) currentSong = playlist.length - 1;
+    let index = store.songPlayingIndex - 1;
+    if (index < 0) index = store.openedList.songs.length - 1;
+    store.playSong(index);
   };
 
   const onPlayerReady = (event) => {
-    playlist = store.getYouTubeIds(store.openedList.songs);
     player = event.target;
-    loadAndPlayCurrentSong(event.target);
+    loadAndPlayCurrentSong();
   };
 
   const onPlayerStateChange = (event) => {
@@ -62,8 +70,8 @@ const VideoPlayer = () => {
       // THE VIDEO HAS COMPLETED PLAYING
       console.log('0 Video ended');
       nextSong();
-      loadAndPlayCurrentSong(player);
-      setIsPlaying(true);
+      // loadAndPlayCurrentSong();
+      // setIsPlaying(true);
     } else if (playerStatus === 1) {
       // THE VIDEO IS PLAYED
       console.log('1 Video played');
@@ -81,12 +89,12 @@ const VideoPlayer = () => {
 
   const handleNextSong = () => {
     nextSong();
-    loadAndPlayCurrentSong(player);
+    loadAndPlayCurrentSong();
   };
 
   const handlePrevSong = () => {
     prevSong();
-    loadAndPlayCurrentSong(player);
+    loadAndPlayCurrentSong();
   };
 
   const handlePlaySong = () => {
@@ -101,29 +109,36 @@ const VideoPlayer = () => {
 
   const handleStopSong = () => {
     player.stopVideo();
+    setIsPlaying(false);
   };
+
   return (
     <>
-      {store.openedList && (
+      {store.openedList && !isLoading && (
         <YouTube
-          videoId={playlist[currentSong]}
+          videoId={id}
           opts={playerOptions}
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}
         />
       )}
       <Box>
-        {store.openedList && (
+        {store.openedList && store.openedList.songs.length > 0 && (
           <>
             <Typography>Playlist: {store.openedList.name}</Typography>
-            <Typography>Song#: {currentSong + 1}</Typography>
-            {/* <Typography>
-              Title: {store.songPlaying !== null ? store.songPlaying.title : ''}
+            <Typography>Song#: {store.songPlayingIndex + 1}</Typography>
+            <Typography>
+              Title:
+              {store.openedList.songs.length > 0
+                ? store.openedList.songs[store.songPlayingIndex].title
+                : ''}
             </Typography>
             <Typography>
               Artist:{' '}
-              {store.songPlaying !== null ? store.songPlaying.artist : ''}
-            </Typography> */}
+              {store.openedList.songs.length > 0
+                ? store.openedList.songs[store.songPlayingIndex].artist
+                : ''}
+            </Typography>
           </>
         )}
       </Box>
