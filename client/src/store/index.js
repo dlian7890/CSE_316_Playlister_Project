@@ -247,6 +247,16 @@ const GlobalStoreContextProvider = (props) => {
     let newListName = 'Untitled';
     let ownerUsername = auth.user.username;
     let ownerEmail = auth.user.email;
+    let playlistWSameName = store.visiblePlaylists.filter((playlist) => {
+      return playlist.name === newListName;
+    });
+    while (playlistWSameName.length > 0) {
+      newListName += '(1)';
+      playlistWSameName = store.visiblePlaylists.filter((playlist) => {
+        return playlist.name === newListName;
+      });
+      console.log(playlistWSameName.length);
+    }
     const response = await api.createPlaylist(
       newListName,
       [],
@@ -275,6 +285,19 @@ const GlobalStoreContextProvider = (props) => {
     let ownerUsername = auth.user.username;
     let ownerEmail = auth.user.email;
     let songs = playlist.songs;
+    let getPlaylistResponse = await api.getPlaylistsByUser();
+    let usersPlaylists = getPlaylistResponse.data.playlists;
+    console.log(usersPlaylists);
+    let playlistWSameName = usersPlaylists.filter((playlist) => {
+      return playlist.name === newListName;
+    });
+    while (playlistWSameName.length > 0) {
+      newListName += '(1)';
+      playlistWSameName = usersPlaylists.filter((playlist) => {
+        return playlist.name === newListName;
+      });
+      console.log(playlistWSameName.length);
+    }
     const response = await api.createPlaylist(
       newListName,
       songs,
