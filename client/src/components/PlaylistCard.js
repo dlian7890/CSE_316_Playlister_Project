@@ -76,7 +76,7 @@ const PlaylistCard = (props) => {
   };
 
   const toggleEditName = () => {
-    setEditListNameActive(!editListNameActive);
+    if (auth.errorMessage === '') setEditListNameActive(!editListNameActive);
   };
 
   const handleToggleEditListName = (event) => {
@@ -90,8 +90,15 @@ const PlaylistCard = (props) => {
 
   const handleKeyPress = (event) => {
     if (event.code === 'Enter') {
-      store.changeListName(playlist, listName);
-      toggleEditName();
+      let playlistWSameName = store.visiblePlaylists.filter((playlist) => {
+        return playlist.name === listName;
+      });
+      if (playlistWSameName.length > 0)
+        auth.setErrorMessage('Playlist name must be unique');
+      else {
+        store.changeListName(playlist, listName);
+        toggleEditName();
+      }
     }
   };
 

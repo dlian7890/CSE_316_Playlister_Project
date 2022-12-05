@@ -13,20 +13,24 @@ const SongCard = (props) => {
   };
 
   const handleDragOver = (event) => {
+    event.stopPropagation();
     event.preventDefault();
   };
 
   const handleDragEnter = (event) => {
+    event.stopPropagation();
     event.preventDefault();
     setDraggedTo(true);
   };
 
   const handleDragLeave = (event) => {
+    event.stopPropagation();
     event.preventDefault();
     setDraggedTo(false);
   };
 
   const handleDrop = (event) => {
+    event.stopPropagation();
     event.preventDefault();
     let targetIndex = index;
     let sourceIndex = Number(event.dataTransfer.getData('song'));
@@ -34,7 +38,8 @@ const SongCard = (props) => {
     store.addMoveSongTransaction(sourceIndex, targetIndex);
   };
 
-  const handleDeleteSong = () => {
+  const handleDeleteSong = (event) => {
+    event.stopPropagation();
     store.showDeleteSongModal(index, song);
   };
 
