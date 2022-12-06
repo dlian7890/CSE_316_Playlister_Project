@@ -265,6 +265,28 @@ const GlobalStoreContextProvider = (props) => {
             return 0;
           });
         }
+        case 'LIKES': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            if (a.likesCount > b.likesCount) {
+              return -1;
+            }
+            if (a.likesCount < b.likesCount) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+        case 'DISLIKES': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            if (a.dislikesCount > b.dislikesCount) {
+              return -1;
+            }
+            if (a.dislikesCount < b.dislikesCount) {
+              return 1;
+            }
+            return 0;
+          });
+        }
       }
     return sortedPlaylist;
   };
