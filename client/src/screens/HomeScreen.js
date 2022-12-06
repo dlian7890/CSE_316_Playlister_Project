@@ -22,6 +22,7 @@ const HomeScreen = () => {
   useEffect(() => {
     store.setScreen('HOME');
   }, []);
+  
 
   let playlistCards = '';
   if (store.visiblePlaylists !== null) {

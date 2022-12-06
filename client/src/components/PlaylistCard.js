@@ -286,7 +286,7 @@ const PlaylistCard = (props) => {
               </Button>
             )}
 
-            {store.selectedList === 'HOME' && (
+            {store.currentScreen === 'HOME' && (
               <Button
                 variant='contained'
                 onClick={handleDeletePlaylist}

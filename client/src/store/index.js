@@ -23,6 +23,7 @@ export const GlobalStoreActionType = {
   EDIT_SONG: 'EDIT_SONG',
   SET_MODAL: 'SET_MODAL',
   PLAY_SONG: 'PLAY_SONG',
+  SET_SORT_BY: 'SET_SORT_BY',
 };
 
 export const CurrentModal = {
@@ -48,6 +49,7 @@ const GlobalStoreContextProvider = (props) => {
     selectedSongIndex: -1,
     selectedSong: null,
     songPlayingIndex: null,
+    sortBy: '',
   });
   const navigate = useNavigate();
 
@@ -73,6 +75,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.OPEN_LIST: {
@@ -85,6 +88,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: 0,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -97,6 +101,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -109,6 +114,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -121,6 +127,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: null,
+          sortBy: '',
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -133,6 +140,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.EDIT_SONG: {
@@ -145,6 +153,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: payload.index,
           selectedSong: payload.song,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.SET_MODAL: {
@@ -157,6 +166,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
+          sortBy: store.sortBy,
         });
       }
       case GlobalStoreActionType.PLAY_SONG: {
@@ -169,6 +179,20 @@ const GlobalStoreContextProvider = (props) => {
           selectedSongIndex: store.selectedSongIndex,
           selectedSong: store.selectedSong,
           songPlayingIndex: payload,
+          sortBy: store.sortBy,
+        });
+      }
+      case GlobalStoreActionType.SET_SORT_BY: {
+        return setStore({
+          currentScreen: store.currentScreen,
+          currentModal: store.currentModal,
+          visiblePlaylists: payload.playlists,
+          selectedList: store.selectedList,
+          openedList: store.openedList,
+          selectedSongIndex: store.selectedSongIndex,
+          selectedSong: store.selectedSong,
+          songPlayingIndex: store.selectedSong,
+          sortBy: payload.sortType,
         });
       }
       default:
@@ -192,6 +216,23 @@ const GlobalStoreContextProvider = (props) => {
     }
   };
 
+  store.setSortBy = async (sortType) => {
+    let response = null;
+    if (store.currentScreen === 'HOME')
+      response = await api.getPlaylistsByUser();
+    else response = await api.getPublishedPlaylists();
+
+    if (response.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_SORT_BY,
+        payload: {
+          sortType,
+          playlists: store.sortPlaylist(sortType, response.data.playlists),
+        },
+      });
+    }
+  };
+
   store.loadLists = async () => {
     let response = null;
     if (store.currentScreen === 'HOME')
@@ -202,13 +243,31 @@ const GlobalStoreContextProvider = (props) => {
       let playlists = response.data.playlists;
       storeReducer({
         type: GlobalStoreActionType.LOAD_PLAYLISTS,
-        payload: playlists,
+        payload: store.sortPlaylist(store.sortBy, playlists),
       });
     } else {
       console.log('API FAILED TO GET THE USERS LISTS');
     }
   };
 
+  store.sortPlaylist = (sortType, playlist) => {
+    let sortedPlaylist = playlist;
+    if (sortType !== '')
+      switch (sortType) {
+        case 'NAME': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            if (a.name < b.name) {
+              return -1;
+            }
+            if (a.name > b.name) {
+              return 1;
+            }
+            return 0;
+          });
+        }
+      }
+    return sortedPlaylist;
+  };
   // store.loadPublishedLists = async () => {
   //   const asyncLoadPublishedLists = async () => {
   //     const response = await api.getPublishedPlaylists();
@@ -360,12 +419,7 @@ const GlobalStoreContextProvider = (props) => {
   store.publishList = () => {
     let list = store.selectedList;
     list.isPublished = true;
-    list.publishDate = new Date().toLocaleDateString('en-us', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-
+    list.publishDate = new Date();
     store.updateSelectedList();
   };
 

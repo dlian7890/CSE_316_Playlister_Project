@@ -16,11 +16,7 @@ export const createPlaylist = (
     ownerUsername: ownerUsername,
     ownerEmail: ownerEmail,
     isPublished: false,
-    publishDate: new Date().toLocaleDateString('en-us', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }),
+    publishDate: null,
     listensCount: 0,
     likesCount: 0,
     dislikesCount: 0,

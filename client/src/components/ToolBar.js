@@ -55,6 +55,7 @@ const ToolBar = () => {
     setAnchorEl(null);
   };
   const handleSort = (type) => {
+    store.setSortBy(type);
     handleSortMenuClose();
   };
   return (
@@ -91,56 +92,96 @@ const ToolBar = () => {
           </Grid>
         </Grid>
       </Toolbar>
-      <Menu
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        open={isMenuOpen}
-        onClose={handleSortMenuClose}
-      >
-        <MenuItem
-          onClick={() => {
-            handleSort('Name');
+      {store.currentScreen !== 'HOME' && (
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
           }}
-        >
-          {'Name (A - Z)'}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleSort('DATE');
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
           }}
+          open={isMenuOpen}
+          onClose={handleSortMenuClose}
         >
-          Date
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleSort('LISTENS');
+          <MenuItem
+            onClick={() => {
+              handleSort('NAME');
+            }}
+          >
+            {'Name (A - Z)'}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('PUBLISHDATE');
+            }}
+          >
+            Publish Date (Newest)
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('LISTENS');
+            }}
+          >
+            Listens (High - Low)
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('LIKES');
+            }}
+          >
+            Likes (High - Low)
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('DISLIKES');
+            }}
+          >
+            Dislikes (High - Low)
+          </MenuItem>
+        </Menu>
+      )}
+      {store.currentScreen === 'HOME' && (
+        <Menu
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
           }}
-        >
-          Listens
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleSort('LIKES');
+          keepMounted
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
           }}
+          open={isMenuOpen}
+          onClose={handleSortMenuClose}
         >
-          Likes
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleSort('DISLIKES');
-          }}
-        >
-          Dislikes
-        </MenuItem>
-      </Menu>
+          <MenuItem
+            onClick={() => {
+              handleSort('NAME');
+            }}
+          >
+            {'Name (A - Z)'}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('CREATIONDATE');
+            }}
+          >
+            {'Creation Date (Old-New)'}
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              handleSort('EDITDATE');
+            }}
+          >
+            {'Last Edit Date (New-Old)'}
+          </MenuItem>
+        </Menu>
+      )}
     </>
   );
 };
