@@ -302,6 +302,25 @@ const GlobalStoreContextProvider = (props) => {
           });
           break;
         }
+        case 'PUBLISH_DATE': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            return new Date(b.publishDate) - new Date(a.publishDate);
+          });
+          break;
+        }
+        case 'CREATION_DATE': {
+          // sortedPlaylist = playlist.sort((a, b) => {
+          //   console.log(new Date(b.createdAt) - new Date(a.createdAt));
+          //   return new Date(a.createdAt) - new Date(b.createdAt);
+          // });
+          break;
+        }
+        case 'EDIT_DATE': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
+          });
+          break;
+        }
       }
     return sortedPlaylist;
   };

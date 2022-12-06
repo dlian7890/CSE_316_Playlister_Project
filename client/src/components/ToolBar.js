@@ -116,7 +116,7 @@ const ToolBar = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              handleSort('PUBLISHDATE');
+              handleSort('PUBLISH_DATE');
             }}
           >
             Publish Date (Newest)
@@ -168,14 +168,14 @@ const ToolBar = () => {
           </MenuItem>
           <MenuItem
             onClick={() => {
-              handleSort('CREATIONDATE');
+              handleSort('CREATION_DATE');
             }}
           >
             {'Creation Date (Old-New)'}
           </MenuItem>
           <MenuItem
             onClick={() => {
-              handleSort('EDITDATE');
+              handleSort('EDIT_DATE');
             }}
           >
             {'Last Edit Date (New-Old)'}
