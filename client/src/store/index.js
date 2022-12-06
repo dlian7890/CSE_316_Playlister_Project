@@ -287,6 +287,17 @@ const GlobalStoreContextProvider = (props) => {
             return 0;
           });
         }
+        case 'LISTENS': {
+          sortedPlaylist = playlist.sort((a, b) => {
+            if (a.listensCount > b.listensCount) {
+              return -1;
+            }
+            if (a.listensCount < b.listensCount) {
+              return 1;
+            }
+            return 0;
+          });
+        }
       }
     return sortedPlaylist;
   };
