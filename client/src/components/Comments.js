@@ -39,7 +39,7 @@ const Comments = () => {
   return (
     <Box>
       {commentsVisible && <>{comments}</>}
-      {auth.user !== null && (
+      {auth.user !== null && store.openedList.isPublished && (
         <TextField
           fullWidth
           size='small'

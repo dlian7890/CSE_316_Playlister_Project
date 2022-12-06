@@ -48,7 +48,7 @@ const GlobalStoreContextProvider = (props) => {
     openedList: null,
     selectedSongIndex: -1,
     selectedSong: null,
-    songPlayingIndex: null,
+    songPlayingIndex: -1,
     sortBy: '',
     searchText: '',
   });
@@ -86,10 +86,10 @@ const GlobalStoreContextProvider = (props) => {
           currentModal: store.currentModal,
           visiblePlaylists: store.visiblePlaylists,
           selectedList: store.selectedList,
-          openedList: payload,
+          openedList: payload.playlist,
           selectedSongIndex: -1,
           selectedSong: null,
-          songPlayingIndex: 0,
+          songPlayingIndex: payload.index,
           sortBy: store.sortBy,
           searchText: store.searchText,
         });
@@ -442,10 +442,11 @@ const GlobalStoreContextProvider = (props) => {
     }
   };
 
-  store.openList = (playlist) => {
+  store.openList = (playlist, index) => {
+    console.log(index);
     storeReducer({
       type: GlobalStoreActionType.OPEN_LIST,
-      payload: playlist,
+      payload: { playlist: playlist, index: index },
     });
     if (playlist.isPublished) {
       console.log('BYE');
@@ -564,7 +565,7 @@ const GlobalStoreContextProvider = (props) => {
       }
     };
     updateList(playlist);
-    store.openList(playlist);
+    store.openList(playlist, store.songPlayingIndex);
   };
 
   store.likeOrDislikePlaylist = (like, playlist) => {

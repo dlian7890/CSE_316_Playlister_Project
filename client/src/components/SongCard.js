@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { CurrentModal, GlobalStoreContext } from '../store';
 import { Box, IconButton, Link } from '@mui/material';
 import { Clear } from '@mui/icons-material';
+import './SongCard.css';
 
 const SongCard = (props) => {
   const { store } = useContext(GlobalStoreContext);
@@ -43,6 +44,11 @@ const SongCard = (props) => {
     store.showDeleteSongModal(index, song);
   };
 
+  const handlePlaySong = (event) => {
+    event.stopPropagation();
+    store.openList(store.selectedList, index);
+  };
+
   const handleEditSong = () => {
     store.showEditSongModal(index, song);
   };
@@ -65,9 +71,14 @@ const SongCard = (props) => {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       draggable='true'
+      onClick={handlePlaySong}
       onDoubleClick={handleEditSong}
     >
-      <Box>
+      <Box
+        className={
+          store.songPlayingIndex === index ? 'song-text selected' : 'song-text'
+        }
+      >
         {index + 1}.{' '}
         {/* <Link
           underline='hover'

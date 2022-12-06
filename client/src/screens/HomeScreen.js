@@ -22,7 +22,7 @@ const HomeScreen = () => {
   let playlistCards = '';
   if (store.visiblePlaylists !== null) {
     playlistCards = (
-      <Box sx={{ m: 2 }}>
+      <Box sx={{ m: 4 }}>
         {store.visiblePlaylists.map((playlist) => (
           <PlaylistCard
             key={playlist._id}
@@ -38,7 +38,7 @@ const HomeScreen = () => {
     <>
       <Box sx={{ bgcolor: '#f6f6f6' }}>
         <ToolBar />
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
             {playlistCards}
           </Grid>

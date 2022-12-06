@@ -1,5 +1,6 @@
-import { React, useContext } from 'react';
+import { React, useContext, useEffect } from 'react';
 import AuthContext from '../auth';
+import { GlobalStoreContext } from '../store';
 import {
   Avatar,
   Box,
@@ -14,6 +15,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 const RegisterScreen = () => {
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(GlobalStoreContext);
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -27,6 +29,10 @@ const RegisterScreen = () => {
     );
     // auth.loginUser(formData.get('email'), formData.get('password'));
   };
+
+  useEffect(() => {
+    store.setScreen('REGISTER');
+  }, []);
 
   return (
     <Container component='main' maxWidth='xs'>

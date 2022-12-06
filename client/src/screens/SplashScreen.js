@@ -2,10 +2,12 @@ import { React, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import AuthContext from '../auth';
+import { GlobalStoreContext } from '../store';
 import './SplashScreen.css';
 
 const SplashScreen = () => {
   const { auth } = useContext(AuthContext);
+  const { store } = useContext(GlobalStoreContext);
   const navigate = useNavigate();
   const handleRegister = () => {
     navigate('/register');
@@ -21,6 +23,7 @@ const SplashScreen = () => {
     if (auth.loggedIn) {
       navigate('/home');
     }
+    store.setScreen('SPLASH');
   }, []);
 
   return (

@@ -1,0 +1,7 @@
+.song-text.selected {
+  color: rgb(32, 142, 252);
+}
+
+.song-text:hover {
+  color: rgb(32, 142, 252);
+}

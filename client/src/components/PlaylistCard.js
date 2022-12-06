@@ -65,7 +65,7 @@ const PlaylistCard = (props) => {
   };
 
   const handleOpenList = () => {
-    store.openList(playlist);
+    store.openList(playlist, 0);
   };
 
   const handleToggleList = (event) => {

@@ -13,9 +13,8 @@ import YouTube from 'react-youtube';
 const VideoPlayer = () => {
   const { store } = useContext(GlobalStoreContext);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [player, setPlayer] = useState('');
 
-  let player = '';
   let playerStatus = '';
   let id = '';
   // if (store.songPlayingIndex !== -1 && store.openedList !== null) {
@@ -24,9 +23,13 @@ const VideoPlayer = () => {
   // }
 
   useEffect(() => {
-    console.log('Hello');
-    if (player !== '') player.loadVideoById(id);
+    if (player !== '') loadAndPlayCurrentSong();
   }, [store.openedList]);
+
+  useEffect(() => {
+    if (player !== '') loadAndPlayCurrentSong();
+    console.log('Hello');
+  }, [store.songPlayingIndex]);
 
   const playerOptions = {
     height: '390',
@@ -38,7 +41,9 @@ const VideoPlayer = () => {
   };
 
   const loadAndPlayCurrentSong = () => {
-    id = store.openedList.songs[store.songPlayingIndex].youTubeId;
+    id = '';
+    if (store.openedList.songs.length > 0)
+      id = store.openedList.songs[store.songPlayingIndex].youTubeId;
     player.loadVideoById(id);
     setIsPlaying(true);
   };
@@ -56,12 +61,14 @@ const VideoPlayer = () => {
   };
 
   const onPlayerReady = (event) => {
-    player = event.target;
-    loadAndPlayCurrentSong();
+    setPlayer(event.target);
+    id = store.openedList.songs[store.songPlayingIndex].youTubeId;
+    event.target.loadVideoById(id);
+    setIsPlaying(true);
   };
 
   const onPlayerStateChange = (event) => {
-    player = event.target;
+    setPlayer(event.target);
     playerStatus = event.data;
     if (playerStatus === -1) {
       // VIDEO UNSTARTED
@@ -114,7 +121,7 @@ const VideoPlayer = () => {
 
   return (
     <>
-      {store.openedList && !isLoading && (
+      {store.openedList && store.openedList.songs.length > 0 && (
         <YouTube
           videoId={id}
           opts={playerOptions}
@@ -128,7 +135,7 @@ const VideoPlayer = () => {
             <Typography>Playlist: {store.openedList.name}</Typography>
             <Typography>Song#: {store.songPlayingIndex + 1}</Typography>
             <Typography>
-              Title:
+              {'Title: '}
               {store.openedList.songs.length > 0
                 ? store.openedList.songs[store.songPlayingIndex].title
                 : ''}
