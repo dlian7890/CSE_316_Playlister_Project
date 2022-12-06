@@ -50,6 +50,7 @@ const GlobalStoreContextProvider = (props) => {
     selectedSong: null,
     songPlayingIndex: null,
     sortBy: '',
+    searchText: '',
   });
   const navigate = useNavigate();
 
@@ -69,13 +70,14 @@ const GlobalStoreContextProvider = (props) => {
         return setStore({
           currentScreen: store.currentScreen,
           currentModal: CurrentModal.NONE,
-          visiblePlaylists: payload,
+          visiblePlaylists: payload.playlists,
           selectedList: store.selectedList,
           openedList: store.openedList,
           selectedSongIndex: -1,
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: payload.searchText,
         });
       }
       case GlobalStoreActionType.OPEN_LIST: {
@@ -89,6 +91,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: null,
           songPlayingIndex: 0,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.SELECT_LIST: {
@@ -102,6 +105,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.CREATE_NEW_LIST: {
@@ -115,6 +119,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
@@ -128,6 +133,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: null,
           songPlayingIndex: null,
           sortBy: '',
+          searchText: '',
         });
       }
       case GlobalStoreActionType.DELETE_SONG: {
@@ -141,6 +147,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: payload.song,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.EDIT_SONG: {
@@ -154,6 +161,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: payload.song,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.SET_MODAL: {
@@ -167,6 +175,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: null,
           songPlayingIndex: store.songPlayingIndex,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.PLAY_SONG: {
@@ -180,6 +189,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: store.selectedSong,
           songPlayingIndex: payload,
           sortBy: store.sortBy,
+          searchText: store.searchText,
         });
       }
       case GlobalStoreActionType.SET_SORT_BY: {
@@ -193,6 +203,7 @@ const GlobalStoreContextProvider = (props) => {
           selectedSong: store.selectedSong,
           songPlayingIndex: store.selectedSong,
           sortBy: payload.sortType,
+          searchText: store.searchText,
         });
       }
       default:
@@ -243,7 +254,10 @@ const GlobalStoreContextProvider = (props) => {
       let playlists = response.data.playlists;
       storeReducer({
         type: GlobalStoreActionType.LOAD_PLAYLISTS,
-        payload: store.sortPlaylist(store.sortBy, playlists),
+        payload: {
+          playlists: store.sortPlaylist(store.sortBy, playlists),
+          searchText: store.searchText,
+        },
       });
     } else {
       console.log('API FAILED TO GET THE USERS LISTS');
@@ -642,7 +656,7 @@ const GlobalStoreContextProvider = (props) => {
     }
     storeReducer({
       type: GlobalStoreActionType.LOAD_PLAYLISTS,
-      payload: filteredPlaylists,
+      payload: { playlists: filteredPlaylists, searchText: searchText },
     });
   };
 

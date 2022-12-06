@@ -1,9 +1,11 @@
 import { React, useContext, useState } from 'react';
 import { Box, TextField } from '@mui/material';
 import { GlobalStoreContext } from '../store';
+import AuthContext from '../auth';
 
 const Comments = () => {
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const [comment, setComment] = useState('');
 
   let comments = '';
@@ -36,21 +38,16 @@ const Comments = () => {
 
   return (
     <Box>
-      {commentsVisible && (
-        <>
-          {comments}
-          <Box>
-            <TextField
-              fullWidth
-              multiline
-              size='small'
-              sx={{ bgcolor: 'white' }}
-              onKeyPress={handleKeyPress}
-              onChange={handleUpdateComment}
-              value={comment}
-            ></TextField>
-          </Box>
-        </>
+      {commentsVisible && <>{comments}</>}
+      {auth.user !== null && (
+        <TextField
+          fullWidth
+          size='small'
+          sx={{ bgcolor: 'white' }}
+          onKeyPress={handleKeyPress}
+          onChange={handleUpdateComment}
+          value={comment}
+        />
       )}
     </Box>
   );

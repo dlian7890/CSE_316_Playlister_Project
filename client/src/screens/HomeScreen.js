@@ -1,11 +1,11 @@
 import { React, useContext, useEffect, useState } from 'react';
 import { Box, Grid, IconButton, Tab, Tabs } from '@mui/material';
 import { GlobalStoreContext } from '../store';
-import { Add } from '@mui/icons-material';
 import ToolBar from '../components/ToolBar';
 import PlaylistCard from '../components/PlaylistCard';
 import VideoPlayer from '../components/VideoPlayer';
 import Comments from '../components/Comments';
+import StatusBar from '../components/StatusBar';
 
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
@@ -15,14 +15,9 @@ const HomeScreen = () => {
     setCurrentTab(newValue);
   };
 
-  const handleAddPlaylist = () => {
-    store.createNewList();
-  };
-
   useEffect(() => {
     store.setScreen('HOME');
   }, []);
-  
 
   let playlistCards = '';
   if (store.visiblePlaylists !== null) {
@@ -45,11 +40,6 @@ const HomeScreen = () => {
         <ToolBar />
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'right' }}>
-              <IconButton sx={{ mr: 3 }} onClick={handleAddPlaylist}>
-                <Add />
-              </IconButton>
-            </Box>
             {playlistCards}
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -61,6 +51,7 @@ const HomeScreen = () => {
             <Box sx={{ p: 2 }}>{currentTab === 1 && <Comments />}</Box>
           </Grid>
         </Grid>
+        <StatusBar />
       </Box>
     </>
   );

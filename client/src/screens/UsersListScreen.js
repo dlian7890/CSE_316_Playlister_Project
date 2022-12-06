@@ -5,6 +5,7 @@ import { Add } from '@mui/icons-material';
 import ToolBar from '../components/ToolBar';
 import PlaylistCard from '../components/PlaylistCard';
 import VideoPlayer from '../components/VideoPlayer';
+import StatusBar from '../components/StatusBar';
 
 const HomeScreen = () => {
   const { store } = useContext(GlobalStoreContext);
@@ -47,6 +48,7 @@ const HomeScreen = () => {
             <Box sx={{ p: 2 }}>{currentTab === 0 && <VideoPlayer />}</Box>
           </Grid>
         </Grid>
+        <StatusBar />
       </Box>
     </>
   );
