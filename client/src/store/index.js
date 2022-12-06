@@ -395,6 +395,10 @@ const GlobalStoreContextProvider = (props) => {
   };
 
   store.openList = (playlist) => {
+    if (playlist.isPublished) {
+      console.log('BYE');
+      store.listen(playlist);
+    }
     storeReducer({
       type: GlobalStoreActionType.OPEN_LIST,
       payload: playlist,
@@ -573,6 +577,15 @@ const GlobalStoreContextProvider = (props) => {
       }
     };
     updateList(playlist);
+  };
+
+  store.listen = async (playlist) => {
+    let updatedPlaylist = playlist;
+    updatedPlaylist.listensCount++;
+    let response = await api.updatePlaylistById(
+      updatedPlaylist._id,
+      updatedPlaylist
+    );
   };
 
   store.search = async (searchText) => {
