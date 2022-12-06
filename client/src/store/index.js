@@ -264,6 +264,7 @@ const GlobalStoreContextProvider = (props) => {
             }
             return 0;
           });
+          break;
         }
         case 'LIKES': {
           sortedPlaylist = playlist.sort((a, b) => {
@@ -275,6 +276,7 @@ const GlobalStoreContextProvider = (props) => {
             }
             return 0;
           });
+          break;
         }
         case 'DISLIKES': {
           sortedPlaylist = playlist.sort((a, b) => {
@@ -286,6 +288,7 @@ const GlobalStoreContextProvider = (props) => {
             }
             return 0;
           });
+          break;
         }
         case 'LISTENS': {
           sortedPlaylist = playlist.sort((a, b) => {
@@ -297,6 +300,7 @@ const GlobalStoreContextProvider = (props) => {
             }
             return 0;
           });
+          break;
         }
       }
     return sortedPlaylist;
@@ -406,14 +410,14 @@ const GlobalStoreContextProvider = (props) => {
   };
 
   store.openList = (playlist) => {
-    if (playlist.isPublished) {
-      console.log('BYE');
-      store.listen(playlist);
-    }
     storeReducer({
       type: GlobalStoreActionType.OPEN_LIST,
       payload: playlist,
     });
+    if (playlist.isPublished) {
+      console.log('BYE');
+      store.listen(playlist);
+    }
   };
 
   store.selectList = (playlist) => {
