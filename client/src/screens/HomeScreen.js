@@ -34,6 +34,10 @@ const HomeScreen = () => {
     );
   }
 
+  let videoPlayerStyle =
+    currentTab === 0 ? { p: 2 } : { p: 2, display: 'none' };
+  let commentsStyle = currentTab === 1 ? { p: 2 } : { p: 2, display: 'none' };
+
   return (
     <>
       <Box sx={{ bgcolor: '#f6f6f6' }}>
@@ -47,8 +51,10 @@ const HomeScreen = () => {
               <Tab label='Player' />
               <Tab label='Comments' />
             </Tabs>
-            <Box sx={{ p: 2 }}>{currentTab === 0 && <VideoPlayer />}</Box>
-            <Box sx={{ p: 2 }}>{currentTab === 1 && <Comments />}</Box>
+            <Box sx={videoPlayerStyle}>
+              <VideoPlayer />
+            </Box>
+            <Box sx={commentsStyle}>{currentTab === 1 && <Comments />}</Box>
           </Grid>
         </Grid>
         <StatusBar />

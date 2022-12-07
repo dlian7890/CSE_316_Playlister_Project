@@ -121,7 +121,7 @@ const VideoPlayer = () => {
 
   return (
     <>
-      {store.openedList && store.openedList.songs.length > 0 && (
+      {store.openedList && (
         <YouTube
           videoId={id}
           opts={playerOptions}
