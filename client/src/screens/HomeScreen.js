@@ -1,5 +1,5 @@
 import { React, useContext, useEffect, useState } from 'react';
-import { Box, Grid, IconButton, Tab, Tabs } from '@mui/material';
+import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { GlobalStoreContext } from '../store';
 import ToolBar from '../components/ToolBar';
 import PlaylistCard from '../components/PlaylistCard';
@@ -22,7 +22,14 @@ const HomeScreen = () => {
   let playlistCards = '';
   if (store.visiblePlaylists !== null) {
     playlistCards = (
-      <Box sx={{ m: 4 }}>
+      <Box
+        sx={{
+          p: 4,
+          maxHeight: '70vh',
+          height: '70vh',
+          overflow: 'auto',
+        }}
+      >
         {store.visiblePlaylists.map((playlist) => (
           <PlaylistCard
             key={playlist._id}

@@ -1,10 +1,10 @@
 import { React, useContext, useEffect, useState } from 'react';
-import { Box, Grid, IconButton, Tab, Tabs } from '@mui/material';
-import { GlobalStoreContext, CurrentScreen } from '../store';
-import { Add } from '@mui/icons-material';
+import { Box, Grid, Tab, Tabs } from '@mui/material';
+import { GlobalStoreContext } from '../store';
 import ToolBar from '../components/ToolBar';
 import PlaylistCard from '../components/PlaylistCard';
 import VideoPlayer from '../components/VideoPlayer';
+import Comments from '../components/Comments';
 import StatusBar from '../components/StatusBar';
 
 const HomeScreen = () => {
@@ -20,9 +20,16 @@ const HomeScreen = () => {
   }, []);
 
   let playlistCards = '';
-  if (store.visiblePlaylists !== null)
+  if (store.visiblePlaylists !== null) {
     playlistCards = (
-      <Box sx={{ m: 2 }}>
+      <Box
+        sx={{
+          p: 4,
+          maxHeight: '70vh',
+          height: '70vh',
+          overflow: 'auto',
+        }}
+      >
         {store.visiblePlaylists.map((playlist) => (
           <PlaylistCard
             key={playlist._id}
@@ -32,11 +39,17 @@ const HomeScreen = () => {
         ))}
       </Box>
     );
+  }
+
+  let videoPlayerStyle =
+    currentTab === 0 ? { p: 2 } : { p: 2, display: 'none' };
+  let commentsStyle = currentTab === 1 ? { p: 2 } : { p: 2, display: 'none' };
+
   return (
     <>
       <Box sx={{ bgcolor: '#f6f6f6' }}>
         <ToolBar />
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
             {playlistCards}
           </Grid>
@@ -45,7 +58,10 @@ const HomeScreen = () => {
               <Tab label='Player' />
               <Tab label='Comments' />
             </Tabs>
-            <Box sx={{ p: 2 }}>{currentTab === 0 && <VideoPlayer />}</Box>
+            <Box sx={videoPlayerStyle}>
+              <VideoPlayer />
+            </Box>
+            <Box sx={commentsStyle}>{currentTab === 1 && <Comments />}</Box>
           </Grid>
         </Grid>
         <StatusBar />

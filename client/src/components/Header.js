@@ -95,7 +95,7 @@ const Header = () => {
         <Toolbar>
           <Box sx={{ flexGrow: 1 }}>
             {/* <img class='logo-image' src={LogoImage} /> */}
-            <Typography variant='h4'>Playlister</Typography>
+            <Typography variant='h3'>Playlister</Typography>
           </Box>
           <IconButton onClick={handleProfileMenuOpen}>
             <AccountCircle />

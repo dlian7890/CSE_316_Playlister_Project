@@ -32,8 +32,8 @@ const VideoPlayer = () => {
   }, [store.songPlayingIndex]);
 
   const playerOptions = {
-    height: '390',
-    width: '640',
+    height: '315',
+    width: '560',
     playerVars: {
       // https://developers.google.com/youtube/player_parameters
       autoplay: 0,
@@ -122,53 +122,72 @@ const VideoPlayer = () => {
   return (
     <>
       {store.openedList && (
-        <YouTube
-          videoId={id}
-          opts={playerOptions}
-          onReady={onPlayerReady}
-          onStateChange={onPlayerStateChange}
-        />
-      )}
-      <Box>
-        {store.openedList && store.openedList.songs.length > 0 && (
-          <>
-            <Typography>Playlist: {store.openedList.name}</Typography>
-            <Typography>Song#: {store.songPlayingIndex + 1}</Typography>
-            <Typography>
-              {'Title: '}
-              {store.openedList.songs.length > 0
-                ? store.openedList.songs[store.songPlayingIndex].title
-                : ''}
-            </Typography>
-            <Typography>
-              Artist:{' '}
-              {store.openedList.songs.length > 0
-                ? store.openedList.songs[store.songPlayingIndex].artist
-                : ''}
-            </Typography>
-          </>
-        )}
-      </Box>
+        <Box
+          sx={{
+            height: '60vh',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box>
+            <YouTube
+              videoId={id}
+              opts={playerOptions}
+              onReady={onPlayerReady}
+              onStateChange={onPlayerStateChange}
+            />
+          </Box>
 
-      <Box>
-        <IconButton onClick={handlePrevSong}>
-          <SkipPrevious />
+          {store.openedList.songs.length > 0 && (
+            <Box>
+              <Typography>Playlist: {store.openedList.name}</Typography>
+              <Typography>Song#: {store.songPlayingIndex + 1}</Typography>
+              <Typography>
+                {'Title: '}
+                {store.openedList.songs.length > 0
+                  ? store.openedList.songs[store.songPlayingIndex].title
+                  : ''}
+              </Typography>
+              <Typography>
+                Artist:{' '}
+                {store.openedList.songs.length > 0
+                  ? store.openedList.songs[store.songPlayingIndex].artist
+                  : ''}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
+      {!store.openedList && (
+        <Box
+          sx={{
+            height: '60vh',
+          }}
+        ></Box>
+      )}
+
+      <Box
+        sx={{ bgcolor: '#ffffff', display: 'flex', justifyContent: 'center' }}
+      >
+        <IconButton onClick={handlePrevSong} sx={{ mr: 1 }}>
+          <SkipPrevious sx={{ fontSize: '2rem' }} />
         </IconButton>
-        <IconButton onClick={handleStopSong}>
+        <IconButton onClick={handleStopSong} sx={{ mr: 1 }}>
           <Stop />
         </IconButton>
         {isPlaying && (
-          <IconButton onClick={handlePauseSong}>
-            <Pause />
+          <IconButton onClick={handlePauseSong} sx={{ mr: 1 }}>
+            <Pause sx={{ fontSize: '2rem' }} />
           </IconButton>
         )}
         {!isPlaying && (
-          <IconButton onClick={handlePlaySong}>
-            <PlayArrow />
+          <IconButton onClick={handlePlaySong} sx={{ mr: 1 }}>
+            <PlayArrow sx={{ fontSize: '2rem' }} />
           </IconButton>
         )}
         <IconButton onClick={handleNextSong}>
-          <SkipNext />
+          <SkipNext sx={{ fontSize: '2rem' }} />
         </IconButton>
       </Box>
     </>

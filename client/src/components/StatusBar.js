@@ -17,6 +17,9 @@ const StatusBar = () => {
         display: 'flex',
         justifyContent: 'center',
         width: '100%',
+        height: '3vh',
+        bgcolor: '#f6f6f6',
+        py: 3,
       }}
     >
       {store.currentScreen === 'HOME' && (
@@ -24,7 +27,7 @@ const StatusBar = () => {
           <Add />
         </IconButton>
       )}
-      <Typography>
+      <Typography variant='h5'>
         {store.searchText !== ''
           ? store.searchText + ' Playlists'
           : store.currentScreen === 'HOME'

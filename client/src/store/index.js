@@ -125,7 +125,7 @@ const GlobalStoreContextProvider = (props) => {
       case GlobalStoreActionType.SET_CURRENT_SCREEN: {
         return setStore({
           currentScreen: payload.screen,
-          currentModal: store.currentModal,
+          currentModal: CurrentModal.NONE,
           visiblePlaylists: payload.playlists,
           selectedList: null,
           openedList: null,

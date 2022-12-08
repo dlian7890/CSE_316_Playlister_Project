@@ -158,7 +158,7 @@ const PlaylistCard = (props) => {
     );
   else {
     listNameComponent = (
-      <Typography onDoubleClick={handleToggleEditListName}>
+      <Typography onDoubleClick={handleToggleEditListName} variant='h6'>
         {playlist.name}
       </Typography>
     );
@@ -214,7 +214,7 @@ const PlaylistCard = (props) => {
       {selected && (
         <Grid item xs={12}>
           {!playlist.isPublished && (
-            <>
+            <Box sx={{ maxHeight: '40vh', height: '100%', overflow: 'auto' }}>
               <Box
                 sx={{
                   display: 'flex',
@@ -232,7 +232,7 @@ const PlaylistCard = (props) => {
               {playlist.songs.map((song, index) => (
                 <SongCard index={index} song={song} />
               ))}
-            </>
+            </Box>
           )}
           {playlist.isPublished && (
             <List
@@ -308,7 +308,14 @@ const PlaylistCard = (props) => {
       <Grid item xs={10}>
         {playlist.isPublished && (
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography>Published: {playlist.publishDate}</Typography>
+            <Typography>
+              Published:{' '}
+              {new Date(playlist.publishDate).toLocaleDateString('en-us', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </Typography>
             <Typography>Listens: {playlist.listensCount}</Typography>
           </Box>
         )}

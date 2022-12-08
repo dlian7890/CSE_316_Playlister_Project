@@ -60,20 +60,44 @@ const ToolBar = () => {
   };
   return (
     <>
-      <Toolbar>
+      <Toolbar sx={{ height: '6vh' }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={2} sx={{ fontSize: '35px' }}>
-            <IconButton disabled={auth.user === null} onClick={handleGoHome}>
-              <Home />
-            </IconButton>
-            <IconButton onClick={handleGoAllPlaylists}>
-              <Group />
-            </IconButton>
-            <IconButton sx={{ mr: 2 }} onClick={handleGoUsers}>
-              <Person />
-            </IconButton>
+          <Grid item xs={12} sm={1.5} sx={{ fontSize: '1rem' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-around' }}>
+              <IconButton
+                disabled={auth.user === null}
+                onClick={handleGoHome}
+                sx={
+                  store.currentScreen === 'HOME'
+                    ? { color: 'rgb(32, 142, 252)' }
+                    : ''
+                }
+              >
+                <Home sx={{ fontSize: '2rem' }} />
+              </IconButton>
+              <IconButton
+                onClick={handleGoAllPlaylists}
+                sx={
+                  store.currentScreen === 'ALLPLAYLISTS'
+                    ? { color: 'rgb(32, 142, 252)' }
+                    : ''
+                }
+              >
+                <Group sx={{ fontSize: '2rem' }} />
+              </IconButton>
+              <IconButton
+                sx={
+                  store.currentScreen === 'USERS'
+                    ? { mr: 2, color: 'rgb(32, 142, 252)' }
+                    : { mr: 2 }
+                }
+                onClick={handleGoUsers}
+              >
+                <Person sx={{ fontSize: '2rem' }} />
+              </IconButton>
+            </Box>
           </Grid>
-          <Grid item xs={12} sm={8}>
+          <Grid item xs={12} sm={9}>
             <TextField
               fullWidth
               id='outlined-basic'
@@ -85,9 +109,14 @@ const ToolBar = () => {
               sx={{ bgcolor: '#ffffff' }}
             />
           </Grid>
-          <Grid item xs={12} sm={2}>
-            <IconButton onClick={handleSortMenuOpen}>
-              <Sort sx={{ fontSize: '30px' }} />
+          <Grid
+            item
+            xs={12}
+            sm={1.5}
+            sx={{ display: 'flex', justifyContent: 'right' }}
+          >
+            <IconButton onClick={handleSortMenuOpen} sx={{ mr: 2 }}>
+              <Sort sx={{ fontSize: '2rem' }} />
             </IconButton>
           </Grid>
         </Grid>

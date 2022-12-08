@@ -13,10 +13,10 @@ const Comments = () => {
   if (store.openedList !== null) {
     commentsVisible = store.openedList.isPublished;
     comments = (
-      <Box>
+      <Box sx={{ maxHeight: '55vh', height: '55vh', overflow: 'auto' }}>
         {store.openedList.comments.map((comment) => (
           <Box sx={{ bgcolor: 'white', mb: 4, p: 2, borderRadius: '15px' }}>
-            <Box>{comment.username}</Box>
+            <Box sx={{ color: 'rgb(32, 142, 252)' }}>{comment.username}</Box>
             <Box>{comment.text}</Box>
           </Box>
         ))}
@@ -39,15 +39,17 @@ const Comments = () => {
   return (
     <Box>
       {commentsVisible && <>{comments}</>}
-      {auth.user !== null && store.openedList.isPublished && (
-        <TextField
-          fullWidth
-          size='small'
-          sx={{ bgcolor: 'white' }}
-          onKeyPress={handleKeyPress}
-          onChange={handleUpdateComment}
-          value={comment}
-        />
+      {auth.user !== null && commentsVisible && (
+        <Box sx={{ mt: 2 }}>
+          <TextField
+            fullWidth
+            size='small'
+            sx={{ bgcolor: 'white' }}
+            onKeyPress={handleKeyPress}
+            onChange={handleUpdateComment}
+            value={comment}
+          />
+        </Box>
       )}
     </Box>
   );
