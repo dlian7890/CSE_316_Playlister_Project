@@ -213,8 +213,8 @@ const PlaylistCard = (props) => {
       </Grid>
       {selected && (
         <Grid item xs={12}>
-          {!playlist.isPublished && (
-            <Box sx={{ maxHeight: '40vh', height: '100%', overflow: 'auto' }}>
+          <Box sx={{ maxHeight: '40vh', height: '100%', overflow: 'auto' }}>
+            {!playlist.isPublished && (
               <Box
                 sx={{
                   display: 'flex',
@@ -229,12 +229,12 @@ const PlaylistCard = (props) => {
                   <Add />
                 </IconButton>
               </Box>
-              {playlist.songs.map((song, index) => (
-                <SongCard index={index} song={song} />
-              ))}
-            </Box>
-          )}
-          {playlist.isPublished && (
+            )}
+            {playlist.songs.map((song, index) => (
+              <SongCard index={index} song={song} playlist={playlist} />
+            ))}
+          </Box>
+          {/* {playlist.isPublished && (
             <List
               sx={{
                 bgcolor: '#f6f6f6',
@@ -249,7 +249,7 @@ const PlaylistCard = (props) => {
                 </ListItem>
               ))}
             </List>
-          )}
+          )} */}
         </Grid>
       )}
       {selected && auth.user !== null && (

@@ -448,7 +448,7 @@ const GlobalStoreContextProvider = (props) => {
       type: GlobalStoreActionType.OPEN_LIST,
       payload: { playlist: playlist, index: index },
     });
-    if (playlist.isPublished) {
+    if (playlist.isPublished && playlist !== store.openedList) {
       console.log('BYE');
       store.listen(playlist);
     }

@@ -7,7 +7,7 @@ import './SongCard.css';
 const SongCard = (props) => {
   const { store } = useContext(GlobalStoreContext);
   const [draggedTo, setDraggedTo] = useState(0);
-  const { song, index } = props;
+  const { song, index, playlist } = props;
 
   const handleDragStart = (event) => {
     event.dataTransfer.setData('song', index);
@@ -64,6 +64,7 @@ const SongCard = (props) => {
         display: 'flex',
         justifyContent: 'space-between',
         borderRadius: '15px',
+        height: '2.5rem',
       }}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
@@ -89,9 +90,11 @@ const SongCard = (props) => {
         {song.title} by {song.artist}
         {/* </Link> */}
       </Box>
-      <IconButton sx={{ color: 'red' }} onClick={handleDeleteSong}>
-        <Clear />
-      </IconButton>
+      {!playlist.isPublished && (
+        <IconButton sx={{ color: 'red' }} onClick={handleDeleteSong}>
+          <Clear />
+        </IconButton>
+      )}
     </Box>
   );
 };
