@@ -1,4 +1,4 @@
-# Playliser
+# Playlister
 
 ## Description
 Playlist is a full stack MERN music playlister application. Creates playlists of songs and publishes them for other users to view, like, dislike, and comment on. Can only play creative common YouTube videos. 
